@@ -14,7 +14,7 @@ ll query(int i){
     ans += C[i];
   return ans;
 }
-void init(int A,int n){
+void init(ll A[],int n){
   // memset(C,0,sizeof C);
   for(int i=1;i<=n;++i) update(i,A[i],n);
 }
@@ -44,7 +44,7 @@ ll query(int l,int r){
     }
   return ans;
 }
-void init(int A,int n){
+void init(ll A[],int n){
   // memset(C,0,sizeof C);
   for(int i=1;i<=n;++i) update(i,n);
 }
@@ -71,11 +71,11 @@ void updates(int l,int r,int x,int n){
   c[r+1] -= x;
   update(r+1,-x,n);
 }
-void init(int A,int n){ //预处理，A下标从1开始
+void init(ll A[],int n){ //预处理，A下标从1开始
   // memset(C,0,sizeof C);
-  c[1] = a[1];update(1,c[1],n);
+  c[1] = A[1];update(1,c[1],n);
   for(int i=2;i<=n;++i){
-    c[i] = a[i] - a[i-1];
+    c[i] = A[i] - A[i-1];
     update(i,c[i],n);
   }
 }
@@ -106,14 +106,14 @@ void updates(int l,int r,int x,int n){
   update(C2,r+1,-r*x,n);
 }
 ll querys(int l,int r){
-  return n*query(C,r) - query(C2,r) - (n*query(C,l-1) - query(C2,l-1) );
+  return r*query(C,r) - query(C2,r) - ((l-1)*query(C,l-1) - query(C2,l-1) );
 }
-void init(int A,int n){ //A下标从1开始
+void init(ll A[],int n){ //A下标从1开始
   // memset(C,0,sizeof C); //如果只用一次这两句不用敲
-  c[1] = a[1];update(1,c[1],n);
+  c[1] = A[1];update(C,1,c[1],n);
   c2[1] = 0;
   for(int i=2;i<=n;++i){
-    c[i] = a[i] - a[i-1];
+    c[i] = A[i] - A[i-1];
     update(C,i,c[i],n);
     c2[i] = (i-1)*c[i];
     update(C2,i,c2[i],n);
