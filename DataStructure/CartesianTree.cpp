@@ -1,25 +1,28 @@
-ld(int n, int val[], int key[]) {
-	    static stack<int> stk;
-		    for (int i = 1; i <= n; ++i) {
-				        d[i].val = val[i];
-						        d[i].key = key[i];
-								        d[i].sz = 1;
-										    }
-			    sort(d + 1, d + n + 1);
-				    stk.push(0);
-					    for (int i = 1, fa; i <= n; ++i) {
-							        while (fa = stk.top(), d[fa].key > d[i].key) {
-										            upd(fa);
-													            stk.pop();
-																        }
-									        d[i].ls = d[fa].rs;
-											        d[fa].rs = i;
-													        stk.push(i);
-															    }
-						    while (stk.size() > 1) {
-								        upd(stk.top());
-										        stk.pop();
-												    }
-							    stk.pop();
-								    rt = d[0].rs;
+void build(int n) {
+    for (int i = 1; i <= n; ++i) {
+        d[i].val = a[i];
+        d[i].l = 0;
+        d[i].r = 0;
+        d[i].f = 0;
+    }
+    int top = 1;
+    stack[top] = 1;
+    for (int i = 2; i <= n; i++) {
+        while (top > 0 && d[i].val < d[stack[top]].val) //小根堆则改成小于
+            top--;
+        if (top > 0) // 右链中的节点
+        {
+            d[i].f = stack[top];
+            d[i].l = d[stack[top]].r;
+            d[d[stack[top]].r].f = i;
+            d[stack[top]].r = i;
+            stack[++top] = i;
+        } else // 根节点
+        {
+            d[stack[1]].f = i;
+            d[i].l = stack[1];
+            stack[++top] = i;
+        }
+    }
+    dfs(stack[1]);
 }
