@@ -17,6 +17,10 @@ int a[maxn];
 bool cmp (node a,node b){
     if (pos[a.l]==pos[b.l])
     return a.r<b.r;
+	/*奇偶优化 blocks == 500优化
+	  if (pos[a.l]%2) return a.r < b.r;
+	  return a.r > b.r;
+	   */
     return pos[a.l]<pos[b.l];
 }
 inline void add(int x){
