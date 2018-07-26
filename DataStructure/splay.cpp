@@ -1,159 +1,391 @@
-#include <cassert>
-#include <iostream>
-using namespace std;
-
+#include <algorithm>
+#include <cstdio>
+#define nullptr NULL
+const int maxN = 1e5 + 3;
+typedef int intvec[maxN];
+// splay tree
+struct Node;
+Node *root;
+void print_tree(Node *);
+void print_list(Node *);
+int N;
+// void print_tree(Node*);
 struct Node {
-    Node *child[2], *parent;
-    bool reverse;
-    int value, size;
-    long long sum;
+    int data, adding, min_data, degree;
+    bool rev;
+    Node *parent, *left, *right;
+    Node(int d)
+        : data(d)
+        , adding(0)
+        , min_data(d)
+        , degree(1)
+        , rev(false)
+        , parent(nullptr)
+        , left(nullptr)
+        , right(nullptr) {}
+    void push_down() {
+        if (adding) {
+            if (left) {
+                left->data += adding;
+                left->min_data += adding;
+                left->adding += adding;
+            }
+            if (right) {
+                right->data += adding;
+                right->min_data += adding;
+                right->adding += adding;
+            }
+            adding = 0;
+        }
+        if (rev) {
+            if (left) {
+                std::swap(left->left, left->right);
+                left->rev ^= 1;
+            }
+            if (right) {
+                std::swap(right->left, right->right);
+                right->rev ^= 1;
+            }
+            rev = false;
+        }
+    }
+    void update() {
+        min_data = data;
+        if (left && left->min_data < min_data) min_data = left->min_data;
+        if (right && right->min_data < min_data) min_data = right->min_data;
+        degree = 1;
+        if (left) degree += left->degree;
+        if (right) degree += right->degree;
+    }
+    Node *LeftMost() {
+        Node *nd = this;
+        while (true) {
+            nd->push_down();
+            if (nd->left)
+                nd = nd->left;
+            else
+                break;
+        }
+        return nd;
+    }
+    Node *RightMost() {
+        Node *nd = this;
+        while (true) {
+            nd->push_down();
+            if (nd->right)
+                nd = nd->right;
+            else
+                break;
+        }
+        return nd;
+    }
+    Node *prev() {
+        splay();
+        if (left)
+            return left->RightMost();
+        else
+            return nullptr;
+    }
+    Node *next() {
+        splay();
+        if (right)
+            return right->LeftMost();
+        else
+            return nullptr;
+    }
+    void RotateRight() {
+        Node *grandparent = parent->parent;
+        if (parent == root)
+            root = this;
+        else if (parent == parent->parent->left)
+            parent->parent->left = this;
+        else
+            parent->parent->right = this;
+        parent->parent = this;
+        parent->left = right;
+        if (right) right->parent = parent;
+        right = parent;
+        parent = grandparent;
+        right->update();
+        update();
+    }
+    void RotateLeft() {
+        Node *grandparent = parent->parent;
+        if (parent == root)
+            root = this;
+        else if (parent == parent->parent->left)
+            parent->parent->left = this;
+        else
+            parent->parent->right = this;
+        parent->parent = this;
+        parent->right = left;
+        if (left) left->parent = parent;
+        left = parent;
+        parent = grandparent;
+        left->update();
+        update();
+    }
+    void splay(Node *target = nullptr) {
+        while (parent != target) {
+            if (parent->parent == target) {
+                parent->push_down();
+                push_down();
+                if (this == parent->left)
+                    RotateRight();
+                else
+                    RotateLeft();
+            } else {
+                parent->parent->push_down();
+                parent->push_down();
+                push_down();
+                if (this == parent->left) {
+                    if (parent == parent->parent->left)
+                        parent->RotateRight(), RotateRight();
+                    else
+                        RotateRight(), RotateLeft();
+                } else {
+                    if (parent == parent->parent->right)
+                        parent->RotateLeft(), RotateLeft();
+                    else
+                        RotateLeft(), RotateRight();
+                }
+            }
+        }
+        push_down();
+        if (!target) root = this;
+    }
+    Node *kth(int k) {
+        if (k == 0 || k > degree) return nullptr;
+        Node *now = this;
+        while (true) {
+            now->push_down();
+            if ((now->left && k == now->left->degree + 1) || (!now->left && k == 1)) {
+                return now;
+            } else if (now->left && k < now->left->degree + 1)
+                now = now->left;
+            else {
+                if (now->left) k -= now->left->degree;
+                --k;
+                now = now->right;
+            }
+        }
+        return nullptr;
+    }
+    int nth() {
+        splay();
+        int rt = 1;
+        if (left) rt += left->degree;
+        return rt;
+    }
+    Node *drop() {
+        --N;
+        Node *Prev = prev(), *Next = next();
+        if (Prev) {
+            Prev->splay();
+            if (Next) {
+                Next->splay(Prev);
+                Next->left = nullptr;
+                Next->update();
+                Prev->update();
+            } else {
+                Prev->right = nullptr;
+                Prev->update();
+            }
+        } else {
+            if (Next) {
+                Next->splay();
+                Next->left = nullptr;
+                Next->update();
+            } else
+                root = nullptr;
+        }
+        left = right = parent = nullptr;
+        return this;
+    }
+    Node *insert_back(Node *it) {
+        ++N;
+        if (!it) {
+            if (!root) {
+                root = this;
+                return this;
+            }
+            Node *lefm = root->LeftMost();
+            lefm->splay();
+            parent = lefm;
+            lefm->left = this;
+            lefm->update();
+            return this;
+        }
+        Node *next = it->next();
+        it->splay();
+        if (next) {
+            next->splay(it);
+            next->left = this;
+            parent = next;
+            next->update();
+            it->update();
+        } else {
+            it->right = this;
+            parent = it;
+            it->update();
+        }
+        return this;
+    }
 };
 
-Node *nil, *root;
-
-void initTree() {
-    nil = new Node();
-    nil->child[0] = nil->child[1] = nil->parent = nil;
-    nil->value = nil->size = nil->sum = 0;
-    nil->reverse = false;
-    root = nil;
+void destroy(Node *n) {
+    if (!n) return;
+    destroy(n->left);
+    destroy(n->right);
+    delete n;
 }
 
-void update(Node *x) {
-    x->size = x->child[0]->size + x->child[1]->size + 1;
-    x->sum = x->child[0]->sum + x->child[1]->sum + x->value;
-}
-
-void pushDown(Node *x) {
-    if (x == nil) return;
-    if (x->reverse) {
-        swap(x->child[0], x->child[1]);
-        x->child[0]->reverse = !x->child[0]->reverse;
-        x->child[1]->reverse = !x->child[1]->reverse;
-        x->reverse = false;
+Node *part(int A, int B) {
+    Node *next = root->kth(B + 1), *prev = root->kth(A - 1);
+    if (prev) {
+        prev->splay();
+        if (next) {
+            next->splay(prev);
+            return next->left;
+        } else
+            return prev->right;
+    } else {
+        if (next) {
+            next->splay();
+            return next->left;
+        } else
+            return root;
     }
 }
-
-void setLink(Node *x, Node *y, int d) {
-    x->child[d] = y;
-    y->parent = x;
+void add(int A, int B, int D) {
+    Node *r = part(A, B);
+    r->data += D;
+    r->min_data += D;
+    r->adding += D;
+    while (r->parent) {
+        r->parent->update();
+        r = r->parent;
+    }
+}
+void insert(int A, int x) {
+    Node *n = new Node(x);
+    Node *it = root ? root->kth(A) : nullptr;
+    n->insert_back(it);
+}
+void drop(int A) {
+    Node *it = root->kth(A);
+    delete it->drop();
+}
+void reverse(int A, int B) {
+    Node *r = part(A, B);
+    std::swap(r->left, r->right);
+    r->rev ^= 1;
+}
+void revolve(int A, int B, int T) {
+    int len = B - A + 1;
+    T = (T % len + len) % len;
+    if (!T) return;
+    Node *r = part(A, B), *p = r->parent;
+    Node *rt = r->kth(len - T);
+    rt->splay(p);
+    Node *top = rt->right;
+    rt->right = nullptr;
+    top->parent = nullptr;
+    rt->update();
+    Node *lefm = rt->LeftMost();
+    lefm->splay(p);
+    lefm->left = top;
+    top->parent = lefm;
+    lefm->update();
+}
+int min(int A, int B) {
+    Node *r = part(A, B);
+    r->push_down();
+    return r->min_data;
 }
 
-int getDir(Node *x, Node *y) {
-    return x->child[0] == y ? 0 : 1;
+void print_tree(Node *n) {
+    if (!n) {
+        std::printf("EMPTY!\n");
+        return;
+    }
+    std::printf("root %d(+%d)[%d] with degree %d and rev %d:\n", n->data, n->adding, n->min_data, n->degree, n->rev);
+    std::printf("LEFT : \n");
+    print_tree(n->left);
+    std::printf("RIGHT : \n");
+    print_tree(n->right);
+    std::printf("root %d - fin -\n", n->data);
+}
+intvec ans;
+int ans_cnt;
+void print_list(Node *n) {
+    n->push_down();
+    if (n->left) print_list(n->left);
+    ans[ans_cnt++] = n->data;
+    if (n->right) print_list(n->right);
 }
 
-void rotate(Node *x, int d) {
-    Node *y = x->child[d], *z = x->parent;
-    setLink(x, y->child[d ^ 1], d);
-    setLink(y, x, d ^ 1);
-    setLink(z, y, getDir(z, x));
-    update(x);
-    update(y);
-}
-
-void splay(Node *x) {
-    while (x->parent != nil) {
-        Node *y = x->parent, *z = y->parent;
-        int dy = getDir(y, x), dz = getDir(z, y);
-        if (z == nil)
-            rotate(y, dy);
-        else if (dy == dz)
-            rotate(z, dz), rotate(y, dy);
+int nums[maxN];
+void build(int a, int b, Node *r, bool ch) {
+    if (a > b) return;
+    if (a == b) {
+        Node *n = new Node(nums[a]);
+        n->parent = r;
+        if (!ch) {
+            if (r)
+                r->left = n;
+            else
+                root = n;
+        } else {
+            if (r)
+                r->right = n;
+            else
+                root = n;
+        }
+        return;
+    }
+    int mid = (a + b) >> 1;
+    Node *n = new Node(nums[mid]);
+    n->parent = r;
+    if (!ch) {
+        if (r)
+            r->left = n;
         else
-            rotate(y, dy), rotate(z, dz);
-    }
-}
-
-Node *nodeAt(Node *x, int pos) {
-    while (pushDown(x), x->child[0]->size != pos)
-        if (pos < x->child[0]->size)
-            x = x->child[0];
+            root = n;
+    } else {
+        if (r)
+            r->right = n;
         else
-            pos -= x->child[0]->size + 1, x = x->child[1];
-    return splay(x), x;
-}
-
-void split(Node *x, int left, Node *&t1, Node *&t2) {
-    if (left == 0)
-        t1 = nil, t2 = x;
-    else {
-        t1 = nodeAt(x, left - 1);
-        t2 = t1->child[1];
-        t1->child[1] = t2->parent = nil;
-        update(t1);
+            root = n;
     }
+    build(a, mid - 1, n, false);
+    build(mid + 1, b, n, true);
 }
-
-Node *join(Node *x, Node *y) {
-    if (x == nil) return y;
-    x = nodeAt(x, x->size - 1);
-    setLink(x, y, 1);
-    update(x);
-    return x;
-}
-
-void queryAssign(int pos, int value) {
-    root = nodeAt(root, pos);
-    root->value = value;
-    update(root);
-}
-
-void queryReverse(int x, int y) {
-    Node *t1, *t2, *t3;
-    split(root, y, t1, t3);
-    split(t1, x, t1, t2);
-    t2->reverse = !t2->reverse;
-    root = join(join(t1, t2), t3);
-}
-
-long long querySum(int x, int y) {
-    Node *t1, *t2, *t3;
-    split(root, y, t1, t3);
-    split(t1, x, t1, t2);
-    long long res = t2->sum;
-    root = join(join(t1, t2), t3);
-    return res;
-}
-
-const int N = 1e5;
-int a[N];
-
-Node *buildTree(int l, int r) {
-    if (l == r) return nil;
-    int mid = (l + r) >> 1;
-    Node *x = new Node();
-    x->value = a[mid];
-    x->parent = nil;
-    x->reverse = false;
-    setLink(x, buildTree(l, mid), 0);
-    setLink(x, buildTree(mid + 1, r), 1);
-    update(x);
-    return x;
+void dfs(Node *r) // call only once
+{
+    if (!r) return;
+    dfs(r->left);
+    dfs(r->right);
+    r->update();
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    int n;
-    cin >> n;
-    for (int i = 0; i < n; ++i) cin >> a[i];
-    initTree();
-    root = buildTree(0, n);
-    int q;
-    cin >> q;
-    for (int i = 0; i < q; ++i) {
-        char type;
-        int x, y;
-        cin >> type >> x >> y;
-        --x;
-        if (type == 'S')
-            queryAssign(x, y);
-        else if (type == 'R')
-            queryReverse(x, y);
-        else if (type == 'Q')
-            cout << querySum(x, y) << '\n';
-        else
-            assert(false);
+    int M, a, b;
+    std::scanf("%d %d", &N, &M);
+    for (int i = 1; i <= N; ++i) nums[i] = i;
+    build(1, N, nullptr, false);
+    dfs(root);
+    while (M--) {
+        std::scanf("%d %d", &a, &b);
+        revolve(1, a + b - 1, b);
     }
-    return 0;
+    ans_cnt = 0;
+    print_list(root);
+    for (int i = 0; i < N; ++i) {
+        std::printf("%d", ans[i]);
+        if (i == N - 1)
+            std::printf("\n");
+        else
+            std::printf(" ");
+    }
 }
