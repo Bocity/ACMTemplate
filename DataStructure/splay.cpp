@@ -1,391 +1,227 @@
 #include <algorithm>
 #include <cstdio>
-#define nullptr NULL
-const int maxN = 1e5 + 3;
-typedef int intvec[maxN];
-// splay tree
-struct Node;
-Node *root;
-void print_tree(Node *);
-void print_list(Node *);
-int N;
-// void print_tree(Node*);
-struct Node {
-    int data, adding, min_data, degree;
-    bool rev;
-    Node *parent, *left, *right;
-    Node(int d)
-        : data(d)
-        , adding(0)
-        , min_data(d)
-        , degree(1)
-        , rev(false)
-        , parent(nullptr)
-        , left(nullptr)
-        , right(nullptr) {}
-    void push_down() {
-        if (adding) {
-            if (left) {
-                left->data += adding;
-                left->min_data += adding;
-                left->adding += adding;
-            }
-            if (right) {
-                right->data += adding;
-                right->min_data += adding;
-                right->adding += adding;
-            }
-            adding = 0;
+#include <cstring>
+#include <iostream>
+#include <memory.h>
+#define Stop system("pause")
+#define type int
+#define MAXN 2000005
+#define MAXL 100005
+#define INF (1 << 30)
+#define max(a, b) (a > b ? a : b)
+#define min(a, b) (a < b ? a : b)
+using namespace std;
+struct Splay_Tree {
+    struct Node //节点
+    {
+        Node *c[2], *p;
+        int value, size, Min, lazy;
+        bool rev;
+    } * root, *null, *lb, *rb, S[MAXN];
+    int scnt;
+    // inline int max(int a,int b) {return a>b?a:b;}
+    inline Node *NewNode(int value, Node *p) //插入新节点
+    {
+        Node *e = S + (++scnt);
+        e->value = value;
+        e->size = 1;
+        e->p = p;
+        e->Min = value;
+        e->lazy = 0;
+        e->rev = false;
+        e->c[0] = e->c[1] = null;
+        return e;
+    }
+    inline void Update(Node *p) //更新节点信息
+    {
+        if (p == null) return;
+        p->size = p->c[0]->size + p->c[1]->size + 1;
+        p->Min = min(p->value, min(p->c[0]->Min, p->c[1]->Min));
+    }
+    inline void PushDown(Node *x) //更新标记
+    {
+        if (x == null) return;
+        if (x->rev) {
+            x->rev = false;
+            Node *t = x->c[0];
+            x->c[0] = x->c[1];
+            x->c[1] = t;
+            x->c[0]->rev = !x->c[0]->rev;
+            x->c[1]->rev = !x->c[1]->rev;
+            // int w=x->ll; x->ll=x->rr; x->rr=w;
         }
-        if (rev) {
-            if (left) {
-                std::swap(left->left, left->right);
-                left->rev ^= 1;
-            }
-            if (right) {
-                std::swap(right->left, right->right);
-                right->rev ^= 1;
-            }
-            rev = false;
+        if (x->lazy) {
+            int w = x->lazy;
+            x->value += w;
+            x->Min += w;
+            x->c[0]->lazy += w;
+            x->c[1]->lazy += w;
+            x->lazy = 0;
         }
     }
-    void update() {
-        min_data = data;
-        if (left && left->min_data < min_data) min_data = left->min_data;
-        if (right && right->min_data < min_data) min_data = right->min_data;
-        degree = 1;
-        if (left) degree += left->degree;
-        if (right) degree += right->degree;
-    }
-    Node *LeftMost() {
-        Node *nd = this;
-        while (true) {
-            nd->push_down();
-            if (nd->left)
-                nd = nd->left;
-            else
-                break;
-        }
-        return nd;
-    }
-    Node *RightMost() {
-        Node *nd = this;
-        while (true) {
-            nd->push_down();
-            if (nd->right)
-                nd = nd->right;
-            else
-                break;
-        }
-        return nd;
-    }
-    Node *prev() {
-        splay();
-        if (left)
-            return left->RightMost();
+    inline void Rotate(Node *x, int k) //左旋 k=0；右旋 k=1；
+    {
+        Node *y = x->p;
+        PushDown(x->c[0]);
+        PushDown(x->c[1]);
+        PushDown(y->c[!k]);
+        y->c[k] = x->c[!k];
+        y->c[k]->p = y;
+        x->p = y->p;
+        if (y->p->c[0] == y)
+            y->p->c[0] = x;
         else
-            return nullptr;
+            y->p->c[1] = x;
+        y->p = x;
+        x->c[!k] = y;
+        Update(y);
+        Update(x);
+        if (root == y) root = x;
     }
-    Node *next() {
-        splay();
-        if (right)
-            return right->LeftMost();
-        else
-            return nullptr;
-    }
-    void RotateRight() {
-        Node *grandparent = parent->parent;
-        if (parent == root)
-            root = this;
-        else if (parent == parent->parent->left)
-            parent->parent->left = this;
-        else
-            parent->parent->right = this;
-        parent->parent = this;
-        parent->left = right;
-        if (right) right->parent = parent;
-        right = parent;
-        parent = grandparent;
-        right->update();
-        update();
-    }
-    void RotateLeft() {
-        Node *grandparent = parent->parent;
-        if (parent == root)
-            root = this;
-        else if (parent == parent->parent->left)
-            parent->parent->left = this;
-        else
-            parent->parent->right = this;
-        parent->parent = this;
-        parent->right = left;
-        if (left) left->parent = parent;
-        left = parent;
-        parent = grandparent;
-        left->update();
-        update();
-    }
-    void splay(Node *target = nullptr) {
-        while (parent != target) {
-            if (parent->parent == target) {
-                parent->push_down();
-                push_down();
-                if (this == parent->left)
-                    RotateRight();
+    inline void Splay(Node *x, Node *y) //伸展
+    {
+        PushDown(x);
+        while (x->p != y) {
+            if (x->p->p == y) {
+                if (x->p->c[0] == x)
+                    Rotate(x, 0);
                 else
-                    RotateLeft();
+                    Rotate(x, 1);
+            } else if (x->p->p->c[0] == x->p) {
+                if (x->p->c[0] == x)
+                    Rotate(x->p, 0), Rotate(x, 0);
+                else
+                    Rotate(x, 1), Rotate(x, 0);
             } else {
-                parent->parent->push_down();
-                parent->push_down();
-                push_down();
-                if (this == parent->left) {
-                    if (parent == parent->parent->left)
-                        parent->RotateRight(), RotateRight();
-                    else
-                        RotateRight(), RotateLeft();
-                } else {
-                    if (parent == parent->parent->right)
-                        parent->RotateLeft(), RotateLeft();
-                    else
-                        RotateLeft(), RotateRight();
-                }
+                if (x->p->c[1] == x)
+                    Rotate(x->p, 1), Rotate(x, 1);
+                else
+                    Rotate(x, 0), Rotate(x, 1);
             }
         }
-        push_down();
-        if (!target) root = this;
+        Update(x);
     }
-    Node *kth(int k) {
-        if (k == 0 || k > degree) return nullptr;
-        Node *now = this;
-        while (true) {
-            now->push_down();
-            if ((now->left && k == now->left->degree + 1) || (!now->left && k == 1)) {
-                return now;
-            } else if (now->left && k < now->left->degree + 1)
-                now = now->left;
+    inline void Select(int k, Node *y) {
+        Node *x = root;
+        PushDown(x);
+        while (k != x->c[0]->size + 1) {
+            if (k <= x->c[0]->size)
+                x = x->c[0];
             else {
-                if (now->left) k -= now->left->degree;
-                --k;
-                now = now->right;
+                k -= x->c[0]->size + 1;
+                x = x->c[1];
             }
+            PushDown(x);
         }
-        return nullptr;
+        Splay(x, y);
     }
-    int nth() {
-        splay();
-        int rt = 1;
-        if (left) rt += left->degree;
-        return rt;
+    inline void MakeTree(int l, int r, type C[], Node *p, int side) {
+        if (l > r) return;
+        int mid = (l + r) >> 1;
+        Node *x;
+        x = NewNode(C[mid], p);
+        p->c[side] = x;
+        MakeTree(l, mid - 1, C, x, 0);
+        MakeTree(mid + 1, r, C, x, 1);
+        Update(x);
     }
-    Node *drop() {
-        --N;
-        Node *Prev = prev(), *Next = next();
-        if (Prev) {
-            Prev->splay();
-            if (Next) {
-                Next->splay(Prev);
-                Next->left = nullptr;
-                Next->update();
-                Prev->update();
-            } else {
-                Prev->right = nullptr;
-                Prev->update();
-            }
-        } else {
-            if (Next) {
-                Next->splay();
-                Next->left = nullptr;
-                Next->update();
-            } else
-                root = nullptr;
-        }
-        left = right = parent = nullptr;
-        return this;
+    inline void Insert(int pos, int cnt, type C[]) //在pos后插入长度为cnt的区间
+    {
+        Select(pos + 1, null);
+        Select(pos + 2, root);
+        MakeTree(1, cnt, C, root->c[1], 0);
+        Splay(root->c[1]->c[0], null);
     }
-    Node *insert_back(Node *it) {
-        ++N;
-        if (!it) {
-            if (!root) {
-                root = this;
-                return this;
-            }
-            Node *lefm = root->LeftMost();
-            lefm->splay();
-            parent = lefm;
-            lefm->left = this;
-            lefm->update();
-            return this;
-        }
-        Node *next = it->next();
-        it->splay();
-        if (next) {
-            next->splay(it);
-            next->left = this;
-            parent = next;
-            next->update();
-            it->update();
-        } else {
-            it->right = this;
-            parent = it;
-            it->update();
-        }
-        return this;
+    inline void Add(int pos, int cnt, type value) //对pos后长度为cnt的区间中的每个值都增加value
+    {
+        Select(pos, null);
+        Select(pos + cnt + 1, root);
+        root->c[1]->c[0]->lazy += value;
+        Splay(root->c[1]->c[0], null);
     }
-};
+    inline void Delete(int pos, int cnt) //删除pos后长度为cnt的区间
+    {
+        Select(pos, null);
+        Select(pos + cnt + 1, root);
+        root->c[1]->c[0] = null;
+        Splay(root->c[1], null);
+    }
+    inline void Reverse(int pos, int cnt) //旋转pos后长度为cnt的区间
+    {
+        Select(pos, null);
+        Select(pos + cnt + 1, root);
+        root->c[1]->c[0]->rev = !root->c[1]->c[0]->rev;
+        Splay(root->c[1]->c[0], null);
+    }
+    inline void Revolve(int a, int b) //将[a,b]区间向右旋转k步
+    {
+        int A = 1;
+        int B = a - 1;
+        int C = a + b - 1; //转化成交换区间[A,B],[B+1,C];
+        Node *p1, *p2, *p3, *p4;
 
-void destroy(Node *n) {
-    if (!n) return;
-    destroy(n->left);
-    destroy(n->right);
-    delete n;
-}
+        Select(A, null);
+        p1 = root; // A-1;
+        Select(C + 2, null);
+        p2 = root; // C+1;
+        Select(A + 1, null);
+        p3 = root; // A;
+        Select(B + 1, null);
+        p4 = root; // B;
 
-Node *part(int A, int B) {
-    Node *next = root->kth(B + 1), *prev = root->kth(A - 1);
-    if (prev) {
-        prev->splay();
-        if (next) {
-            next->splay(prev);
-            return next->left;
-        } else
-            return prev->right;
-    } else {
-        if (next) {
-            next->splay();
-            return next->left;
-        } else
-            return root;
-    }
-}
-void add(int A, int B, int D) {
-    Node *r = part(A, B);
-    r->data += D;
-    r->min_data += D;
-    r->adding += D;
-    while (r->parent) {
-        r->parent->update();
-        r = r->parent;
-    }
-}
-void insert(int A, int x) {
-    Node *n = new Node(x);
-    Node *it = root ? root->kth(A) : nullptr;
-    n->insert_back(it);
-}
-void drop(int A) {
-    Node *it = root->kth(A);
-    delete it->drop();
-}
-void reverse(int A, int B) {
-    Node *r = part(A, B);
-    std::swap(r->left, r->right);
-    r->rev ^= 1;
-}
-void revolve(int A, int B, int T) {
-    int len = B - A + 1;
-    T = (T % len + len) % len;
-    if (!T) return;
-    Node *r = part(A, B), *p = r->parent;
-    Node *rt = r->kth(len - T);
-    rt->splay(p);
-    Node *top = rt->right;
-    rt->right = nullptr;
-    top->parent = nullptr;
-    rt->update();
-    Node *lefm = rt->LeftMost();
-    lefm->splay(p);
-    lefm->left = top;
-    top->parent = lefm;
-    lefm->update();
-}
-int min(int A, int B) {
-    Node *r = part(A, B);
-    r->push_down();
-    return r->min_data;
-}
+        Select(A, null);   //将A-1伸展成root
+        Select(C + 2, p1); //将C+1伸展到A-1的右边
+        Select(B + 1, p2); //将B伸展到C+1的左边
+        Node *x, *y;
 
-void print_tree(Node *n) {
-    if (!n) {
-        std::printf("EMPTY!\n");
-        return;
-    }
-    std::printf("root %d(+%d)[%d] with degree %d and rev %d:\n", n->data, n->adding, n->min_data, n->degree, n->rev);
-    std::printf("LEFT : \n");
-    print_tree(n->left);
-    std::printf("RIGHT : \n");
-    print_tree(n->right);
-    std::printf("root %d - fin -\n", n->data);
-}
-intvec ans;
-int ans_cnt;
-void print_list(Node *n) {
-    n->push_down();
-    if (n->left) print_list(n->left);
-    ans[ans_cnt++] = n->data;
-    if (n->right) print_list(n->right);
-}
+        x = p4->c[1]; //把b的右子树切断，挂在a的左边
+        p4->c[1] = null;
 
-int nums[maxN];
-void build(int a, int b, Node *r, bool ch) {
-    if (a > b) return;
-    if (a == b) {
-        Node *n = new Node(nums[a]);
-        n->parent = r;
-        if (!ch) {
-            if (r)
-                r->left = n;
-            else
-                root = n;
-        } else {
-            if (r)
-                r->right = n;
-            else
-                root = n;
-        }
-        return;
+        p3->c[0] = x;
+        Splay(p3, null); //把a伸展为root,一路更新即可
     }
-    int mid = (a + b) >> 1;
-    Node *n = new Node(nums[mid]);
-    n->parent = r;
-    if (!ch) {
-        if (r)
-            r->left = n;
-        else
-            root = n;
-    } else {
-        if (r)
-            r->right = n;
-        else
-            root = n;
+    inline type GetMin(int pos, int cnt) //获得pos后长度为cnt的区间的最小值
+    {
+        Select(pos, null);
+        Select(pos + cnt + 1, root);
+        PushDown(root->c[1]->c[0]);
+        return root->c[1]->c[0]->Min;
     }
-    build(a, mid - 1, n, false);
-    build(mid + 1, b, n, true);
-}
-void dfs(Node *r) // call only once
-{
-    if (!r) return;
-    dfs(r->left);
-    dfs(r->right);
-    r->update();
-}
-
+    void Index(int pos) {
+        Select(pos + 1, null);
+        printf("*%d\n", root->value);
+    }
+    inline void Print() //打印区间
+    {
+        int i;
+        for (i = 1; i < scnt - 1; i++) Index(i);
+    }
+    inline void Init() {
+        scnt = -1;
+        null = 0;
+        null = NewNode(INF, 0);
+        null->size = 0;
+        lb = root = NewNode(INF, null);
+        rb = root->c[1] = NewNode(INF, root);
+        Update(root);
+    }
+} Splay;
+int N, M, pos;
+type C[MAXL], ans;
+char s[20];
 int main() {
-    int M, a, b;
-    std::scanf("%d %d", &N, &M);
-    for (int i = 1; i <= N; ++i) nums[i] = i;
-    build(1, N, nullptr, false);
-    dfs(root);
+    int i, j, a, b, c, k;
+    Splay.Init();
+    scanf("%d", &N);
+    for (i = 1; i <= N; i++) C[i] = i;
+    Splay.Insert(0, N, C);
+    scanf("%d", &M);
     while (M--) {
-        std::scanf("%d %d", &a, &b);
-        revolve(1, a + b - 1, b);
+        int a, b;
+        scanf("%d%d", &a, &b);
+        if (a != 1) Splay.Revolve(a, b);
     }
-    ans_cnt = 0;
-    print_list(root);
-    for (int i = 0; i < N; ++i) {
-        std::printf("%d", ans[i]);
-        if (i == N - 1)
-            std::printf("\n");
-        else
-            std::printf(" ");
-    }
+    for (i = 1; i < N; i++) printf("%d ", Splay.GetMin(i, 1));
+    printf("%d\n", Splay.GetMin(N, 1));
+    return 0;
 }
