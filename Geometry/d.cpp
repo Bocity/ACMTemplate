@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std; // 计算几何模板
+#define REP(i, x, n) for (int i = x; i < n; ++i)
 const double eps = 1e-8;
 const double inf = 1e20;
 const double pi = acos(-1.0);
@@ -823,10 +824,28 @@ vector<Point> convexCut(const vector<Point> &ps, Point q1, Point q2) {
     }
     return qs;
 }
-
-int main() {
-    ios::sync_with_stdio(0);
-    srand(time(0));
-    REP(i, 0, (int) 1e8) {}
+polygon P, P2;
+const int maxn = 1e8;
+const int mod = 32767;
+main() {
+    mt19937 mt_rand(time(0));
+    REP(n, 4, 11) {
+        P.n = n;
+        long long tot = 0;
+        REP(i, 1, maxn + 1) {
+            REP(j, 0, n) {
+                P.p[j].x = mt_rand() % mod;
+                P.p[j].y = mt_rand() % mod;
+                while (P.p[j].x + P.p[j].y >= mod) {
+                    P.p[j].x = mt_rand() % mod;
+                    P.p[j].y = mt_rand() % mod;
+                }
+            }
+            P.Graham(P2);
+            tot += P2.n;
+            if (i == maxn) printf("%.8f", tot * 1.0 / i);
+        }
+        puts("");
+    }
     return 0;
 }
