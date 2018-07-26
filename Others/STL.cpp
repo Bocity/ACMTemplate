@@ -1,6 +1,7 @@
 //随机数     
 mt19937 mt_rand(time(0));
 mt_rand()  随机范围 int 循环节 2^19937
+
 //rope 不支持一切数值操作
 #include <ext/rope>
 using namespace __gnu_cxx;
@@ -15,3 +16,6 @@ t.at(x)/[x]	//访问第x个元素
 //rope支持operator += -= + - < ==
 //length()，size()都可以哦
 //可以用<<运算符由输入输出流读入或输出。
+
+//随机打乱
+random_shuffle(e + 1,e + m + 1);
