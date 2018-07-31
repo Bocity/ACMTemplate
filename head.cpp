@@ -13,18 +13,32 @@ typedef long long ll;
 typedef double db;
 typedef long double ld;
 typedef pair<int,int> pii;
-typedef __int128 ull;
+// typedef __int128 ull;
+typedef unsigned long long ull;
 
 #define fi first
 #define se second
 #define pb push_back
+#define mp make_pair
 
 const ll MOD=1e9+7;
-const ll N=1e3+50;
+const ll N=1e7+50;
 const db eps=1e-9;
+const ll INF=3e9;
 
-ll qpower(ll x,ll p){ll ans=1;while(p){if (p&1) ans=ans*x%MOD;p>>=1;x=x*x%MOD;}return ans;}
-ll gcd(ll a,ll b){ll x;while(b){x = a%b;a = b;b = x;}return a;}
-ll modp(ll x,ll p){return (x%p+p)%p;}
+inline ll qpower(ll x,ll p,ll M=MOD){ll ans=1;while(p){if (p&1) ans=ans*x%M;p>>=1;x=x*x%M;}return ans;}
+inline ll gcd(ll a,ll b){ll x;while(b){x = a%b;a = b;b = x;}return a;}
+inline ll modp(ll x,ll p = MOD){return (x%p+p)%p;} //常数较大
+inline ll addp(ll x,ll y,ll p = MOD){return x+y>=MOD?x+y-MOD:x+y;}
+inline ll subp(ll x,ll y,ll p = MOD){return x-y<0?x-y+MOD:x-y;}
+inline int ifloor(db x){return x>0?int(x+eps):int(x-eps);}
 // std::ios::sync_with_stdio(false);
 // srand((unsigned)time(NULL));
+
+int main(){
+  int t,n;
+  scanf("%d",&t);
+  while(t--){
+    scanf("%d",&n);
+  }
+}

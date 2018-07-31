@@ -1,5 +1,17 @@
 #include <bits/stdc++.h>
 #define REP(i,x,n) for(int i = (x); i < (n); ++i)
+
+
+inline void mul(int a[][N],int b[][N],int c[][N]){
+  static int f[N][N];
+  rep(i)rep(j){
+    f[i][j]=inf;
+    rep(k) f[i][j] = std::min(f[i][j] ,a[i][k]+b[k][j]);
+  }
+  rep(i)rep(j)c[i][j]=f[i][j];
+}
+
+
 const int MOD = 1e9+7;
 const int N = 3;
 struct Mat {
@@ -59,3 +71,4 @@ int main(){
 //[2,2,3]*[Qn-1,Qn-2,1]^T
 //[1,0,0]
 //[0,0,1]
+
