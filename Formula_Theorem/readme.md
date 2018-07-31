@@ -28,3 +28,5 @@ bool cmp(node x, node y) {
     return min(y.l, x.r) < min(x.l, y.r);
 }
 ```
+## 欧拉降幂
+$A^K\equiv A^{K \%\phi(m) +\phi(m)}(\ mod\ m)\qquad \; K >  \phi(m) $
