@@ -21,3 +21,10 @@ det (\left|\begin{array}{cccc}
 子树大小倒数乘积
 ## 删子树轮数期望
 结点深度倒数和
+## Johnson法则
+```cpp
+bool cmp(node x, node y) {
+    if (min(y.l, x.r) == min(x.l, y.r)) return x.l > y.l;
+    return min(y.l, x.r) < min(x.l, y.r);
+}
+```
