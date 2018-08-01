@@ -10,3 +10,4 @@ inline int readT() {
     while (c = getchar(), c >= '0' && c <= '9') ret = ret * 10 + (c ^ 48);
     return flag ? -ret : ret;
 }
+

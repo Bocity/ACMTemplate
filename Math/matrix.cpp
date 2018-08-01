@@ -1,17 +1,21 @@
 #include <bits/stdc++.h>
 #define REP(i,x,n) for(int i = (x); i < (n); ++i)
 
-
-inline void mul(int a[][N],int b[][N],int c[][N]){
-  static int f[N][N];
-  rep(i)rep(j){
-    f[i][j]=inf;
-    rep(k) f[i][j] = std::min(f[i][j] ,a[i][k]+b[k][j]);
-  }
-  rep(i)rep(j)c[i][j]=f[i][j];
+// 普通矩阵乘法
+void mul(ll a[][N],ll b[][N],ll c[][N],int n){
+  static ll f[N][N];
+  llp(i,1,n+1)
+    llp(j,1,n+1) {
+      //修改此处
+      f[i][j] = INF;
+      llp(k,1,n+1) f[i][j] = min(f[i][j],a[i][k]+b[k][j]);
+    }
+  llp(i,1,n+1)
+    llp(j,1,n+1)
+      c[i][j] = f[i][j];
 }
 
-
+// 矩阵快速幂
 const int MOD = 1e9+7;
 const int N = 3;
 struct Mat {
@@ -42,6 +46,7 @@ Mat operator^(Mat a, ll k) {
     }
     return c;
 }
+
 int t,n;
 Mat a,b,c,d,e;
 int main(){

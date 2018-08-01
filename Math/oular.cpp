@@ -1,3 +1,4 @@
+//求单个欧拉函数，O(sqrt(n))
 int oula(int n)
 {
     int rea=n;
@@ -14,13 +15,13 @@ int oula(int n)
     return rea;
 }
 
-const int maxx = 2e7 + 5;
-int phi[maxx];
-bool check[maxx];
-int prime[maxx];
-void phi_table2(int n) { //线性筛改
+int phi[N];
+bool check[N];
+int prime[N];
+int tot = 0;
+void phi_table(int n) {
+    tot = 0;
     phi[1] = 1;
-    int tot = 0;
     for (int i = 2; i <= n; i++) {
         if (!check[i]) {
             prime[tot++] = i;
