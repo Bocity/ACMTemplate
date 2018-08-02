@@ -29,4 +29,14 @@ bool cmp(node x, node y) {
 }
 ```
 ## 欧拉降幂
-$A^K\equiv A^{K \%\phi(m) +\phi(m)}(\ mod\ m)\qquad \; K >  \phi(m) $
+$
+A^K \equiv \left \{
+\begin{aligned}
+& A^{K \%\phi(m)}  &  \gcd(A,K)=1\\
+& A^{K \%\phi(m) +\phi(m)}    & \gcd(A,K) \neq 1, K \geq  \phi(m) \\
+& A^{K}   & \gcd(A,K) \neq 1, K <  \phi(m) 
+\end{aligned} 
+\right.
+\qquad
+(\ mod\ m)
+$
