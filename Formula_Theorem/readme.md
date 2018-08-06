@@ -40,3 +40,9 @@ A^K \equiv \left \{
 \qquad
 (\ mod\ m)
 $
+## 绝对值不等式
+$||a|-|b|| ≤|a±b|≤|a|+|b|$
+## able 变换
+$\sum _{{k=m}}^{n}f_{k}(g_{{k+1}}-g_{k})=\left[f_{{n+1}}g_{{n+1}}-f_{m}g_{m}\right]-\sum _{{k=m}}^{n}g_{{k+1}}(f_{{k+1}}-f_{k}).$
+
+$\sum _{{i=m+1}}^{n}\left(b_{i}-b_{{i-1}}\right)a_{i}+\sum _{{i=m+1}}^{n}\left(a_{i}-a_{{i-1}}\right)b_{{i-1}}=a_{n}b_{n}-a_{m}b_{m}=\sum _{{i=m+1}}^{n}\left(b_{i}-b_{{i-1}}\right)a_{{i-1}}+\sum _{{i=m+1}}^{n}\left(a_{i}-a_{{i-1}}\right)b_{i}$
