@@ -5,11 +5,11 @@
 #define rson rt << 1 | 1
 ll sum[N << 2];
 
-void Maintain(ll rt) { //更新答案
+inline oid Maintain(const ll &rt) { //更新答案
     sum[rt] = sum[lson] + sum[rson];
     return;
 }
-void build(int l, int r, int rt = 1) {
+void build(int l, int r, const int &rt = 1) {
     if (l == r) {
         sum[rt] = 0;
         return;
@@ -21,7 +21,7 @@ void build(int l, int r, int rt = 1) {
     return;
 }
 
-void update(int L, ll c, int l, int r, int rt = 1) {
+inline void update(const int &L, const ll &c, int l, int r, const int &rt = 1) {
     if (l == r) {
         sum[rt] = c;
         return;
@@ -35,7 +35,7 @@ void update(int L, ll c, int l, int r, int rt = 1) {
     return;
 }
 
-ll query(int L, int R, int l, int r, int rt = 1) {
+inline ll query(const int &L, const int &R, int l, int r, const int &rt = 1) {
     if (L <= l && r <= R) {
         return sum[rt];
     }

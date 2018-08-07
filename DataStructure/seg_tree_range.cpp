@@ -5,12 +5,12 @@
 #define rson rt << 1 | 1
 ll sum[N << 2], add[N << 2];
 // 更新答案
-void Maintain(int rt) {
+inline void Maintain(const int &rt) {
     sum[rt] = sum[lson] + sum[rson];
     return;
 }
 // 延时标记下传
-void Pushdown(int rt, int m) {
+inline void Pushdown(const int &rt, const int &m) {
     if (add[rt] != 0) { // 倍数变化 add[rt] != 1
         add[rt << 1] += add[rt];
         add[rt << 1 | 1] += add[rt];
@@ -19,7 +19,7 @@ void Pushdown(int rt, int m) {
         add[rt] = 0;
     }
 }
-void build(int l, int r, int rt = 1) {
+void build(int l, int r, const int &rt = 1) {
     add[rt] = 0; // 倍数变化更改为1
     if (l == r) {
         sum[rt] = a[rk[l]];
@@ -31,7 +31,7 @@ void build(int l, int r, int rt = 1) {
     Maintain(rt);
     return;
 }
-void update(int L, int R, int c, int l, int r, int rt = 1) {
+inline void update(const int &L,const int &R,const int &c, int l, int r,const int &rt = 1) {
     if (L <= l && r <= R) {
         add[rt] += c;
         sum[rt] += c * (r - l + 1);
@@ -44,7 +44,7 @@ void update(int L, int R, int c, int l, int r, int rt = 1) {
     Maintain(rt);
     return;
 }
-int query(int L, int R, int l, int r, int rt = 1) {
+inline int query(const int &L,const int &R, int l, int r,const int &rt = 1) {
     if (L <= l && r <= R) {
         return sum[rt];
     }
