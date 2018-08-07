@@ -31,7 +31,7 @@ void build(int l, int r, int rt = 1) {
     Maintain(rt);
     return;
 }
-void update(int L, int R, int c, int l, int r, int rt = 1) {
+void update(int L, int R, ll c, int l, int r, int rt = 1) {
     if (L <= l && r <= R) {
         add[rt] += c;
         sum[rt] += c * (r - l + 1);
@@ -44,13 +44,13 @@ void update(int L, int R, int c, int l, int r, int rt = 1) {
     Maintain(rt);
     return;
 }
-int query(int L, int R, int l, int r, int rt = 1) {
+ll query(int L, int R, int l, int r, int rt = 1) {
     if (L <= l && r <= R) {
         return sum[rt];
     }
     Pushdown(rt, r - l + 1);
     int m = (l + r) >> 1;
-    int ret = 0;
+    ll ret = 0;
     if (L <= m) ret += query(L, R, LSON);
     if (m < R) ret += query(L, R, RSON);
     return ret;

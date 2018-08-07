@@ -6,7 +6,7 @@ using namespace std;
 // priority_queue<Type, Container, Functional>
 // 内部用堆实现，插入删除复杂度logn
 
-//1.默认降序
+//1.默认大根堆
 priority_queue<int> Q;
 
 //2.升序

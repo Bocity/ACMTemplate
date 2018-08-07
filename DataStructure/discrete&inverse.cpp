@@ -6,7 +6,7 @@
 //下标从1开始
 
 ll C[N];
-void update(int i,int x,int n){ //需要手动初始化
+void update(int i,ll x,int n){ //需要手动初始化
   for(;i<=n;i+=i&(-i)) C[i]+=x;
 }
 ll query(int i){
@@ -18,15 +18,20 @@ ll query(int i){
 
 int tmp[N];
 int d[N];
-int n;
 void discrete(){
   sort(tmp+1,tmp+1+n);
-  int m=unique(tmp+1,tmp+1+m)- (tmp+1);
-  for (i=1;i<=n;++i) d[i]=lower_bound(tmp+1,tmp+1+m,d[i])-(tmp+1) + 1;
+  int m=unique(tmp+1,tmp+1+n)- (tmp+1);
+  for (int i=1;i<=n;++i) d[i]=lower_bound(tmp+1,tmp+1+m,d[i])-(tmp+1) + 1;
 }
 
 int main(){
-  discrete();
+  int n;
+  scanf("%d",&n);
+  for(int i=1;i<=n;++i) {
+    scanf("%d",d+i);
+    tmp[i] = d[i]; // tmp[i]是d[i]的拷贝
+  }
+  discrete(n);
 
   //求每个元素后面的比它小的值，查询d[i]-1，插入d[i]
   //如果是小于等于，查询d[i]
@@ -34,7 +39,8 @@ int main(){
   //求每个元素后面的比它大的值，需要插入相反的值，d[i]映射后为n-d[i]+1
   //求每个元素前面的值，则正着循环
   ll ans=0;
-  for(i=n;i>=1;--i) { 
+  mem(C,0);
+  for(int i=n;i>=1;--i) { 
     ans += query(d[i]-1);
     update(d[i],1,n);
   }

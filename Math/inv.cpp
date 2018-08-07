@@ -9,3 +9,13 @@ void getInv(int n,int mod = MOD){
 ll getInv(ll n,int mod = MOD) {
     return qpower(n, mod - 2);
 }
+
+//阶乘和阶乘的逆元, O(n)
+ll fac[N];
+ll inv[N];
+void getFac(int n) {
+    fac[0] = 1;
+    llp(i, 1, n + 1) fac[i] = fac[i - 1] * i % MOD;
+    inv[n] = getInv(fac[n]);
+    rlp(i, 0, n) inv[i] = (i + 1) * inv[i + 1] % MOD;
+}

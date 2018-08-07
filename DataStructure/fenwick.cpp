@@ -7,10 +7,10 @@ int lowbit(int x){ // 返回最低位的1
 ll A[N];
 //树状数组维护前缀和。只维护C,不会使用A。
 //但凡具有区间和性质的函数都可以用树状数组维护前缀和
-//但凡有区间差性质的函数都可以用前缀和维护区间和，比如乘，加
+//但凡有区间差性质的函数都可以用前缀和维护区间和，比如乘，加，注意初始值不同
 //如果按值插入则可以做到维护在当前元素左边/右边的比它大/小的数的函数和
 ll C[N];
-void update(int i,int x,int n){ //需要手动初始化
+void update(int i,ll x,int n){ //需要手动初始化
   for(;i<=n;i+=i&(-i)) C[i]+=x;
 }
 ll query(int i){
@@ -47,7 +47,7 @@ ll query(int l,int r){
 
 //区间更新，单点查询，只维护C,不会使用A。
 ll C[N],c[N];
-void update(int i,int x,int n){ //只维护C和c,不会使用A。
+void update(int i,ll x,int n){ //只维护C和c,不会使用A。
   for(;i<=n;i+=i&(-i))
     C[i]+=x;
 }
@@ -57,7 +57,7 @@ ll query(int i){
     ans += C[i];
   return ans;
 }
-void updates(int l,int r,int x,int n){
+void updates(int l,int r,ll x,int n){
   c[l] += x;
   update(l,x,n);
   c[r+1] -= x;
@@ -74,7 +74,7 @@ void init(ll A[],int n){ //预处理，A下标从1开始
 
 //区间更新，区间查询, 只维护C,不会使用A。
 ll C[N],C2[N],c[N],c2[N];
-void update(ll C[],int i,int x,int n){ //只维护C,不会使用其他数组。
+void update(ll C[],int i,ll x,int n){ //只维护C,不会使用其他数组。
   for(;i<=n;i+=i&(-i))
     C[i]+=x;
 }
@@ -84,7 +84,7 @@ ll query(ll C[],int i){
     ans += C[i];
   return ans;
 }
-void updates(int l,int r,int x,int n){
+void updates(int l,int r,ll x,int n){
   c[l] += x;
   update(C,l,x,n);
   c[r+1] -= x;

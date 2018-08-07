@@ -15,6 +15,6 @@ void screen(int n) {
 }
 
 int main() {
-    screen();
+    screen(30000);
     cout << prime[3000 - 1] << endl; // 3000th prime
 }

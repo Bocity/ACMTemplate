@@ -16,7 +16,7 @@ int oula(int n)
 }
 
 int phi[N];
-bool check[N];
+bool check[N]; // 访问标记
 int prime[N];
 int tot = 0;
 void phi_table(int n) {
