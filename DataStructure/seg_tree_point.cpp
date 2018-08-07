@@ -5,7 +5,7 @@
 #define rson rt << 1 | 1
 ll sum[N << 2];
 
-inline oid Maintain(const ll &rt) { //更新答案
+inline void Maintain(const ll &rt) { //更新答案
     sum[rt] = sum[lson] + sum[rson];
     return;
 }
