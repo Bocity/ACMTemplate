@@ -108,3 +108,27 @@ void init(ll A[],int n){ //A下标从1开始
     update(C2,i,c2[i],n);
   }
 }
+
+//权值树状数组操作
+//查排名
+int myrank(int i) {
+    int res = 1;
+	for (--i; i; i -= i & -i) res += C[i];
+    return res;
+}
+// 查区间kth 小 
+int findk(int k) {
+    int ans = 0, cnt = 0;
+    for (int i = 30; i >= 0; --i) {
+        ans += (1 << i);
+        if (ans > maxn || cnt + C[ans] >= k)
+            ans -= (1 << i);
+        else
+            cnt += C[ans];
+    }
+    return (ans + 1);
+}
+//查x的前驱
+findk(myrank(x)-1);
+//查x的后继
+findk(myrank(x + 1));
