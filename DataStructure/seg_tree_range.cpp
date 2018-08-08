@@ -74,7 +74,7 @@ inline void Maintain(const int &rt) {
     return;
 }
 // 延时标记下传，需要修改
-inline void Pushdown(const int &rt, const int &m) {
+inline void Pushdown(const int &rt) {
     if (lazy[rt] != 0) { // lazy更新，需要修改
         lazy[rt << 1] += lazy[rt];
         lazy[rt << 1 | 1] += lazy[rt];
@@ -101,7 +101,7 @@ void update(int L, int R, ll c, int l, int r, int rt = 1) {
         ans[rt] += c;
         return;
     }
-    Pushdown(rt, r - l + 1);
+    Pushdown(rt);
     int m = (l + r) >> 1;
     if (L <= m) update(L, R, c, LSON);
     if (m < R) update(L, R, c, RSON);
@@ -112,7 +112,7 @@ ll query(const int &L,const int &R, int l, int r,const int &rt = 1) {
     if (L <= l && r <= R) { 
         return ans[rt];
     }
-    Pushdown(rt, r - l + 1);
+    Pushdown(rt);
     int m = (l + r) >> 1;
     ll ret = 0;  //  统计答案，需要修改
     if (L <= m) ret = max(ret,query(L, R, LSON));
