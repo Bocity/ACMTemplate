@@ -33,7 +33,7 @@ void build(int l, int r, const int &rt = 1) {
     Maintain(rt);
     return;
 }
-void update(int L, int R, ll c, int l, int r, int rt = 1) {
+void update(const int &L,const int &R, const ll &c, int l, int r,const int &rt = 1) {
     if (L <= l && r <= R) {  // 区间更新，需要修改
         lazy[rt] += c;
         ans[rt] += c * (r - l + 1);
@@ -95,7 +95,7 @@ void build(int l, int r, const int &rt = 1) {
     Maintain(rt);
     return;
 }
-void update(int L, int R, ll c, int l, int r, int rt = 1) {
+void update(const int &L,const int &R,cosnt ll &c, int l, int r,const int &rt = 1) {
     if (L <= l && r <= R) {  // 区间更新，需要修改
         lazy[rt] += c;
         ans[rt] += c;
