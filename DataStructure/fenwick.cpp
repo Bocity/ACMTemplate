@@ -46,10 +46,15 @@ ll query(int l,int r){
 
 
 //区间更新，单点查询，只维护C,不会使用A。
-ll C[N],c[N];
+//C维护的不是A，而是差分数组c的前缀和
+ll C[N];
 void update(int i,ll x,int n){ //只维护C和c,不会使用A。
   for(;i<=n;i+=i&(-i))
     C[i]+=x;
+}
+void updates(int l,int r,ll x,int n){
+  update(l,x,n);
+  update(r+1,-x,n);
 }
 ll query(int i){
   ll ans = 0;
@@ -57,71 +62,54 @@ ll query(int i){
     ans += C[i];
   return ans;
 }
-void updates(int l,int r,ll x,int n){
-  c[l] += x;
-  update(l,x,n);
-  c[r+1] -= x;
-  update(r+1,-x,n);
-}
 void init(ll A[],int n){ //预处理，A下标从1开始
   // memset(C,0,sizeof C);
-  c[1] = A[1];update(1,c[1],n);
-  for(int i=2;i<=n;++i){
-    c[i] = A[i] - A[i-1];
-    update(i,c[i],n);
-  }
+  for(int i=1;i<=n;++i)
+    update(i,A[i] - A[i-1],n);
 }
 
-//区间更新，区间查询, 只维护C,不会使用A。
-ll C[N],C2[N],c[N],c2[N];
-void update(ll C[],int i,ll x,int n){ //只维护C,不会使用其他数组。
-  for(;i<=n;i+=i&(-i))
-    C[i]+=x;
-}
-ll query(ll C[],int i){
-  ll ans = 0;
-  for(;i;i-=i&(-i)) //每次处理一个长度为lowbit(i)的区间
-    ans += C[i];
-  return ans;
+//区间更新，前缀查询, 只维护C,不会使用A。
+//C维护的是差分数组c，C2维护的是c2[i] = (i-1)*c[i]
+ll C[N],C2[N];
+void update(int r,ll x,int n){ //只维护C,不会使用其他数组。
+  for(int i=;i<=n;i+=i&(-i)){
+    C[i] += x;
+    C2[i] += (r-1)*x;
+  }
 }
 void updates(int l,int r,ll x,int n){
-  c[l] += x;
-  update(C,l,x,n);
-  c[r+1] -= x;
-  update(C,r+1,-x,n);
-  c2[l] += (l-1)*x;
-  update(C2,l,(l-1)*x,n);
-  c2[r+1] -= r*x;
-  update(C2,r+1,-r*x,n);
+  update(l,x,n);
+  update(r+1,-x,n);
 }
-ll querys(int l,int r){
-  return r*query(C,r) - query(C2,r) - ((l-1)*query(C,l-1) - query(C2,l-1) );
+ll query(int r){
+  ll ans = 0;
+  for(int i=r;i;i-=i&(-i)) //每次处理一个长度为lowbit(i)的区间
+    ans += r*C[i]-C2[i];
+  return ans;
 }
 void init(ll A[],int n){ //A下标从1开始
   // memset(C,0,sizeof C); //如果只用一次这两句不用敲
-  c[1] = A[1];update(C,1,c[1],n);
-  c2[1] = 0;
-  for(int i=2;i<=n;++i){
-    c[i] = A[i] - A[i-1];
-    update(C,i,c[i],n);
-    c2[i] = (i-1)*c[i];
-    update(C2,i,c2[i],n);
-  }
+  for(int i=1;i<=n;++i)
+    update(i,A[i]-A[i-1],n);
 }
 
 //权值树状数组操作
 //查排名
+ll C[N];
 int myrank(int i) {
-    int res = 1;
+  int res = 1;
 	for (--i; i; i -= i & -i) res += C[i];
-    return res;
+  return res;
+}
+void update(int i,ll x,int n){ //需要手动初始化
+  for(;i<=n;i+=i&(-i)) C[i]+=x;
 }
 // 查区间kth 小 
-int findk(int k) {
+int findk(int k,int n) {
     int ans = 0, cnt = 0;
     for (int i = 30; i >= 0; --i) {
         ans += (1 << i);
-        if (ans > maxn || cnt + C[ans] >= k)
+        if (ans > n || cnt + C[ans] >= k)
             ans -= (1 << i);
         else
             cnt += C[ans];
@@ -129,6 +117,9 @@ int findk(int k) {
     return (ans + 1);
 }
 //查x的前驱
-findk(myrank(x)-1);
+findk(myrank(x)-1,n);
 //查x的后继
-findk(myrank(x + 1));
+findk(myrank(x + 1),n);
+
+
+//二维树状数组，区间更新

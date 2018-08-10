@@ -1,4 +1,4 @@
-namespace fastIO {
+namespace fastIO {  // 读入正负整数
 #define BUF_SIZE 100000
 // fread -> read
 bool IOerror = 0;
@@ -32,3 +32,13 @@ inline bool read(auto &x) {
 #undef BUF_SIZE
 };
 using namespace fastIO;
+
+
+// 短小版 读入正整数
+void read(int &x)
+{
+    x=0; char c=getchar();
+    while(!isdigit(c)) c=getchar();
+    while(isdigit(c)) { x=x*10+c-'0'; c=getchar(); }
+}
+ 

@@ -1,3 +1,40 @@
+// Xander的莫队。在modui内读入询问，输出答案
+// 需要更改移动操作。注意区间的下标和原数组的下标。
+struct Query{
+  int l,r,id,num;
+  bool operator < (Query& b){
+    if (num!=b.num) return num<b.num;
+    else return r<b.r;
+  }
+}Q[N];//id为询问序号，num为块序号
+ll ans[N];
+void modui(int n,int q){ // 答案存在ans里
+  int block = (int)(sqrt(n)+0.5);//块大小
+  
+  int li,ri;
+  llp(i,0,q){  //读入查询
+    scanf("%d%d",&li,&ri);
+    Q[i] = Query{li,ri,i,li/block};
+  }
+  
+  sort(Q,Q+q); 
+  // llp(i,0,q) printf("Q = %d l = %d r = %d num = %d\n",Q[i].id,Q[i].l,Q[i].r,Q[i].num);
+  
+  int l = 0,r = 0;
+  ll tmp = 1;
+  llp(i,0,q){ // 移动，需要更改
+    while(r<Q[i].r)  {tmp = subp(addp(tmp,tmp),C(r,l)); r++;} //r右移
+    while(r>Q[i].r)  {tmp = addp(tmp,C(r-1,l))*inv[2]%MOD; r--;} //r左移
+    while(l<Q[i].l)  {tmp = addp(tmp, C(r,l+1)); l++;} //l右移
+    while(l>Q[i].l)  {tmp = subp(tmp, C(r,l)); l--;} //l左移
+    ans[Q[i].id] = tmp;
+  }
+
+  llp(i,0,q) printf("%lld\n",ans[i]);
+}
+
+// Bocity的垃圾莫队
+
 #include <bits/stdc++.h>
 // 注意每次flag l r 的初始化 以及有可能会爆longlong
 // 莫队算法时间复杂度 O（N^1.5）
@@ -87,3 +124,4 @@ int main(){
    }
     return 0;
 }
+
