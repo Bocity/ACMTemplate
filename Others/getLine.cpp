@@ -7,6 +7,8 @@ getline(cin,str,'\n') //扔掉换行.在string头文件中.
 
 char s[200];
 cin.getline(s,100,'\n'); //扔掉换行
+
+getchar();//gets会读上一行(scanf等)的换行，只要用一次
 gets(s);//扔掉换行
 
 scanf("%[^\n]",&s);  //忽略换行，但不扔掉，需要手动扔掉

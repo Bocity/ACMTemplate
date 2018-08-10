@@ -46,3 +46,12 @@ int main(){
     scanf("%d",&n);
   }
 }
+/* lookat
+- memset 
+- initial value f(0)
+- int*int = ll? u*u = ull 
+- int(double+eps)
+- special case, n=0
+- outrange, N = ?
+- getchar()
+*/
