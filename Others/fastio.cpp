@@ -1,44 +1,49 @@
-namespace fastIO {  // 读入正负整数
-#define BUF_SIZE 100000
-// fread -> read
-bool IOerror = 0;
-inline char nc() {
-    static char buf[BUF_SIZE], *p1 = buf + BUF_SIZE, *pend = buf + BUF_SIZE;
-    if (p1 == pend) {
-        p1 = buf;
-        pend = buf + fread(buf, 1, BUF_SIZE, stdin);
-        if (pend == p1) {
-            IOerror = 1;
-            return -1;
-        }
+struct FastIO {
+    static const int S = 2 * N;
+    int wpos;
+    char wbuf[S];
+    FastIO() : wpos(0) {}
+    inline int xchar() {
+        static char buf[S];
+        static int len = 0, pos = 0;
+        if (pos == len) pos = 0, len = fread(buf, 1, S, stdin);
+        if (pos == len) exit(0);
+        return buf[pos++];
     }
-    return *p1++;
-}
-inline bool blank(char ch) {
-    return ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t';
-}
-inline bool read(auto &x) {
-    char ch;
-    bool ne = false;
-    while (blank(ch = nc()))
-        ;
-    if (IOerror) return false;
-    if (ch == '-') ne = true, ch = nc();
-    for (x = ch - '0'; (ch = nc()) >= '0' && ch <= '9'; x = x * 10 + ch - '0')
-        ;
-    if (ne) x = -x;
-    return true;
-}
-#undef BUF_SIZE
-};
-using namespace fastIO;
-
-
-// 短小版 读入正整数
-void read(int &x)
-{
-    x=0; char c=getchar();
-    while(!isdigit(c)) c=getchar();
-    while(isdigit(c)) { x=x*10+c-'0'; c=getchar(); }
-}
- 
+    inline int xuint() {
+        int c = xchar(), x = 0;
+        while (c <= 32) c = xchar();
+        for (; '0' <= c && c <= '9'; c = xchar()) x = x * 10 + c - '0';
+        return x;
+    }
+    inline int xint() {
+        int s = 1, c = xchar(), x = 0;
+        while (c <= 32) c = xchar();
+        if (c == '-') s = -1, c = xchar();
+        for (; '0' <= c && c <= '9'; c = xchar()) x = x * 10 + c - '0';
+        return x * s;
+    }
+    inline void xstring(char *s) {
+        int c = xchar();
+        while (c <= 32) c = xchar();
+        for (; c > 32; c = xchar()) *s++ = c;
+        *s = 0;
+    }
+    inline void wchar(int x) {
+        if (wpos == S) fwrite(wbuf, 1, S, stdout), wpos = 0;
+        wbuf[wpos++] = x;
+    }
+    inline void wint(ll x) {
+        if (x < 0) wchar('-'), x = -x;
+        char s[24];
+        int n = 0;
+        while (x || !n) s[n++] = '0' + x % 10, x /= 10;
+        while (n--) wchar(s[n]);
+    }
+    inline void wstring(const char *s) {
+        while (*s) wchar(*s++);
+    }
+    ~FastIO() {
+        if (wpos) fwrite(wbuf, 1, wpos, stdout), wpos = 0;
+    }
+} io;
