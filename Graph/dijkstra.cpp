@@ -34,6 +34,7 @@ struct Dijkstra {
         }
     }
 } solver;
+
 // std::priority_queue implementation
 struct Dijkstra {
     priority_queue<pii, vector<pii>, greater<pii>> pq;

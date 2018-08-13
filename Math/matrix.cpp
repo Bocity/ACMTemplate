@@ -1,45 +1,22 @@
 #include <bits/stdc++.h>
 #define REP(i,x,n) for(int i = (x); i < (n); ++i)
 
-// 普通矩阵乘法
-void mul(ll a[][N],ll b[][N],ll c[][N],int n){
-  static ll f[N][N];
-  llp(i,1,n+1)
-    llp(j,1,n+1) {
-      //修改此处
-      f[i][j] = INF;
-      llp(k,1,n+1) f[i][j] = min(f[i][j],a[i][k]+b[k][j]);
-    }
-  llp(i,1,n+1)
-    llp(j,1,n+1)
-      c[i][j] = f[i][j];
-}
-
 // 矩阵快速幂
-const int MOD = 1e9+7;
+const ll MOD = 1e9+7;
 const int N = 3;
 struct Mat {
-    ll mat[N][N]; //每个Mat使用前都要memset 。  否则会出现奇奇怪怪的错误
+    ll mat[N][N]; 
+    Mat{memset(mat,0,sizeof mat);}
 };
 Mat operator*(Mat a, Mat b) {
     Mat c;
-    memset(c.mat, 0, sizeof(c.mat));
-    int i, j, k;
-    for (k = 0; k < N; ++k) {
-        for (i = 0; i < N; ++i) {
-            for (j = 0; j < N; ++j) {
-                c.mat[i][j] = (c.mat[i][j] + a.mat[i][k] * b.mat[k][j]) % MOD;
-            }
-        }
-    }
+    REP(k,0,N) REP (i,0,N)  REP (j,0,N)             
+        c.mat[i][j] = (c.mat[i][j] + a.mat[i][k] * b.mat[k][j]) % MOD;
     return c;
 }
 Mat operator^(Mat a, ll k) {
     Mat c;
-    int i, j;
-    for (i = 0; i < N; ++i)
-        for (j = 0; j < N; ++j) c.mat[i][j] = (i == j);
-
+    REP(i,0,N) REP(j,0,N) c.mat[i][j] = (i == j);
     for (; k; k >>= 1) {
         if (k & 1) c = c * a;
         a = a * a;
@@ -52,9 +29,6 @@ Mat a,b,c,d,e;
 int main(){
     ios::sync_with_stdio();
     cin.tie(0);
-    memset(a.mat,0,sizeof a.mat);
-    memset(b.mat,0,sizeof b.mat);
-    memset(c.mat,0,sizeof c.mat);
     a.mat[0][0] = 2,a.mat[0][1] = 2,a.mat[0][2] = 3;
     a.mat[1][0] = 1,a.mat[1][1] = 0,a.mat[1][2] = 0;
     a.mat[2][0] = 0,a.mat[2][1] = 0,a.mat[2][2] = 1;

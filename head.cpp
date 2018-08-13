@@ -42,15 +42,17 @@ inline bool fequal(db x){return x>0?int(x+eps):int(x-eps);}
 int main(){
   int t,n;
   scanf("%d",&t);
-  while(t--){
-    scanf("%d",&n);
+  while(~scanf("%d",&n)){
+    
   }
 }
 /* lookat
+- boundary
 - memset 
 - initial value f(0)
-- int*int = ll? u*u = ull 
+- int*int? u*u = ull 
 - int(double+eps)
+- llp(i,l,r+1)
 - special case, n=0
 - outrange, N = ?
 - getchar()
