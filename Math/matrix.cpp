@@ -6,7 +6,7 @@ const ll MOD = 1e9+7;
 const int N = 3;
 struct Mat {
     ll mat[N][N]; 
-    Mat{memset(mat,0,sizeof mat);}
+    Mat(){memset(mat,0,sizeof mat);}
 };
 Mat operator*(Mat a, Mat b) {
     Mat c;

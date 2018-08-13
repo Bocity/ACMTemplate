@@ -13,18 +13,18 @@ struct FastIO {
         if (pos == len) exit(0);
         return buf[pos++];
     }
-    inline ull xuint() {
-        int c = xchar();ull x = 0;
-        while (c <= 32) c = xchar();
-        for (; '0' <= c && c <= '9'; c = xchar()) x = x * 10 + c - '0';
-        return x;
-    }
     inline ll xint() {
         int s = 1, c = xchar();ll x = 0;
         while (c <= 32) c = xchar();
         if (c == '-') s = -1, c = xchar();
         for (; '0' <= c && c <= '9'; c = xchar()) x = x * 10 + c - '0';
         return x * s;
+    }
+    inline ull xuint() {
+        int c = xchar();ull x = 0;
+        while (c <= 32) c = xchar();
+        for (; '0' <= c && c <= '9'; c = xchar()) x = x * 10 + c - '0';
+        return x;
     }
     inline void xstring(char *s) {
         int c = xchar();
