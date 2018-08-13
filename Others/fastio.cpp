@@ -1,5 +1,8 @@
+typedef long long ll;
+typedef long long ull;
+const int maxlen = 100000;
 struct FastIO {
-    static const int S = 2 * N;
+    static const int S = 2*maxlen;
     int wpos;
     char wbuf[S];
     FastIO() : wpos(0) {}
@@ -10,14 +13,14 @@ struct FastIO {
         if (pos == len) exit(0);
         return buf[pos++];
     }
-    inline int xuint() {
-        int c = xchar(), x = 0;
+    inline ull xuint() {
+        int c = xchar();ull x = 0;
         while (c <= 32) c = xchar();
         for (; '0' <= c && c <= '9'; c = xchar()) x = x * 10 + c - '0';
         return x;
     }
-    inline int xint() {
-        int s = 1, c = xchar(), x = 0;
+    inline ll xint() {
+        int s = 1, c = xchar();ll x = 0;
         while (c <= 32) c = xchar();
         if (c == '-') s = -1, c = xchar();
         for (; '0' <= c && c <= '9'; c = xchar()) x = x * 10 + c - '0';
@@ -40,6 +43,12 @@ struct FastIO {
         while (x || !n) s[n++] = '0' + x % 10, x /= 10;
         while (n--) wchar(s[n]);
     }
+    inline void wuint(ull x) {
+        char s[24];
+        int n = 0;
+        while (x || !n) s[n++] = '0' + x % 10, x /= 10;
+        while (n--) wchar(s[n]);
+    }
     inline void wstring(const char *s) {
         while (*s) wchar(*s++);
     }
@@ -47,3 +56,9 @@ struct FastIO {
         if (wpos) fwrite(wbuf, 1, wpos, stdout), wpos = 0;
     }
 } io;
+
+// maxlen 输出单位长度（只影响速度，不用改）
+// xchar/wchar 读入/输出字符，基本函数
+// xuint/wuint，读入/输出无符号整数(ull)
+// xint/wint，读入/输出符号整数(ll)
+// xstring/wstring，读入/输出char字符串
