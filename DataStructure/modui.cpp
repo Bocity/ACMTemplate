@@ -5,6 +5,10 @@ struct Query{
   bool operator < (Query& b){
     if (num!=b.num) return num<b.num;
     else return r<b.r;
+  /*奇偶优化 blocks == 500优化
+    if (pos[a.l]%2) return a.r < b.r;
+    return a.r > b.r;
+    */
   }
 }Q[N];//id为询问序号，num为块序号
 ll ans[N];
@@ -33,7 +37,9 @@ void modui(int n,int q){ // 答案存在ans里
   llp(i,0,q) printf("%lld\n",ans[i]);
 }
 
-// Bocity的垃圾莫队
+// ------------------------------------------------------------------------
+
+// Bocity的莫队
 
 #include <bits/stdc++.h>
 // 注意每次flag l r 的初始化 以及有可能会爆longlong

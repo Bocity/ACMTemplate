@@ -1,12 +1,15 @@
 struct arc {
-    int x, f, next;
+    int x, f, next;  //x:destination, f:weight
 };
+const int N = 10000;//nodes
+const int M = 100000;//edges
+
 // std::set implementation
 struct Dijkstra {
     set<pii> st;
     int pre[N], mcnt, s, dis[N];
     arc e[2 * M];
-    void init(int i) {
+    void init(int i) { 
         mems(pre, -1);
         mcnt = 0;
         s = i;
@@ -37,7 +40,7 @@ struct Dijkstra {
 
 // std::priority_queue implementation
 struct Dijkstra {
-    priority_queue<pii, vector<pii>, greater<pii>> pq;
+    priority_queue<pii, vector<pii>, greater<pii>> pq;  //{dis,node}
     int pre[N], mcnt, s, dis[N];
     arc e[2 * M];
     void init(int i) {

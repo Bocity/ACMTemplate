@@ -7,5 +7,8 @@ upper_bound(a,a+n,x);
 lower_bound(a,a+n,x);
 
 //去重，并把重复的元素排在后面，返回的是不重复的序列的尾地址+1，-队首 得到不重复序列长度
-unique(a,a+n);
+int cnt = unique(a,a+n) - a;
+
+random_shuffle();
+
 

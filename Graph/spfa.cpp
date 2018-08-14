@@ -1,6 +1,9 @@
 struct arc {
     int x, f, next;
 };
+const int N = 10000;//nodes
+const int M = 100000;//edges
+
 struct spfa {
     int pre[N], mcnt, s, dis[N];
     bool vis[N];
