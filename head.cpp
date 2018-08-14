@@ -40,6 +40,7 @@ inline bool fequal(db x){return x>0?int(x+eps):int(x-eps);}
 // std::ios::sync_with_stdio(false);
 // srand((unsigned)time(NULL));
 int main(){
+  
   int t,n;
   scanf("%d",&t);
   while(~scanf("%d",&n)){

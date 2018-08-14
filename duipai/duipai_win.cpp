@@ -3,15 +3,15 @@ using namespace std;
 
 int main(){
   for(int T=1;T<=100000;++T){
-    system("./make_data > 1.in");
+    system("make_data.exe > 1.in");
 
     double st = clock();
-    system("./my < 1.in > my.out");
+    system("my.exe < 1.in > my.out");
     double ed = clock();
 
-    system("./std < 1.in > std.out");
+    system("std.exe < 1.in > std.out");
     
-    if (system("diff my.out std.out")) {
+    if (system("fc my.out std.out")) {
       printf("WA\n");
       return 0;
     }

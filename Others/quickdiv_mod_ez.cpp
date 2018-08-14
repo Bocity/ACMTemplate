@@ -35,6 +35,7 @@ struct FastDiv {
   u64 m, x; int s;
 };
 
+
 inline u64 mod64_32_small(u64 a, u32 b) {    //a 为 被取余  b为取余数
   u32 q, r;
   __asm__ (
