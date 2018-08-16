@@ -1,112 +1,101 @@
-int N;
-bool Graph[MaxN+1][MaxN+1];
-int Match[MaxN+1];
-bool InQueue[MaxN+1],InPath[MaxN+1],InBlossom[MaxN+1];
-int Head,Tail;
-int Queue[MaxN+1];
-int Start,Finish;
-int NewBase;
-int Father[MaxN+1],Base[MaxN+1];
-int Count;
-void CreateGraph() {}
-void Push(int u) {
-  Queue[Tail] = u;
-  Tail++;
-  InQueue[u] = true;
+#include <stdio.h>
+#include <string.h>
+#include <algorithm>
+#include <vector>
+#define maxn 300
+#define maxm 90010
+
+using namespace std;
+
+int match[maxn];						//标记是否匹配
+int st[maxn],aim[maxm],nxt[maxm],ln;	//边表
+int q[maxn];							//bfs队列
+int level[maxn];						//离根深度的奇偶性
+vector<int> ar[maxn];					//存每个点到根的路径
+vector<int> a;							//找到的一条增广路
+int n;
+void init() {
+  for(int i=0; i<n; i++)st[i]=-1;
+  ln=0;
 }
-int Pop() {
-  int res = Queue[Head];
-  Head++;
-  return res;
+void in_edge(int x,int y) {
+  aim[ln]=y;
+  nxt[ln]=st[x];
+  st[x]=ln++;
 }
-int FindCommonAncestor(int u,int v) {
-  memset(InPath,false,sizeof(InPath));
-  while (true) {
-    u = Base[u];
-    InPath[u] = true;
-    if (u == Start) break;
-    u = Father[Match[u]];
-  }
-  while (true) {
-    v = Base[v];
-    if (InPath[v]) break;
-    v = Father[Match[v]];
-  }
-  return v;
+int lca(int p,int q) {					//求p和q的最近公共祖先
+  int ret=0;
+  while (ret<ar[p].size() && ret<ar[q].size() && ar[p][ret]==ar[q][ret]) ret++;
+  return ret-1;
 }
-void ResetTrace(int u) {
-  int v;
-  while (Base[u] != NewBase) {
-    v = Match[u];
-    InBlossom[Base[u]] = InBlossom[Base[v]] = true;
-    u = Father[v];
-    if (Base[u] != NewBase) Father[u] = v;
-  }
-}
-void BlossomContract(int u,int v) {
-  NewBase = FindCommonAncestor(u,v);
-  memset(InBlossom,false,sizeof(InBlossom));
-  ResetTrace(u);
-  ResetTrace(v);
-  if (Base[u] != NewBase) Father[u] = v;
-  if (Base[v] != NewBase) Father[v] = u;
-  for (int tu = 1; tu <= N; tu++)
-    if (InBlossom[Base[tu]]) {
-      Base[tu] = NewBase;
-      if (!InQueue[tu]) Push(tu);
-    }
-}
-void FindAugmentingPath() {
-  memset(InQueue,false,sizeof(InQueue));
-  memset(Father,0,sizeof(Father));
-  for (int i = 1; i <= N; i++)
-    Base[i] = i;
-  Head = Tail = 1;
-  Push(Start);
-  Finish = 0;
-  while (Head < Tail) {
-    int u = Pop();
-    for (int v = 1; v <= N; v++)
-      if (Graph[u][v] && (Base[u] != Base[v]) && (Match[u] != v)) {
-        if ((v == Start) ||
-            ((Match[v] > 0) && (Father[Match[v]] > 0)))
-          BlossomContract(u,v);
-        else if (Father[v] == 0) {
-          Father[v] = u;
-          if (Match[v] > 0)
-            Push(Match[v]);
-          else {
-            Finish = v;
-            return;
+int FindAlterRoad(int sp) {
+  int qn=1;
+  memset(level,-1,sizeof(level));
+  level[q[0]=sp]=1;
+  ar[sp].clear();
+  ar[sp].push_back(sp);
+  for (int p=0; p<qn; p++) {
+    int x=q[p];
+    for (int i=st[x]; i!=-1; i=nxt[i]) {
+      int u=aim[i];
+      if (match[u]==u) continue;
+      if (level[u]==-1) {			//u是未访问的点
+        if (match[u]==-1) {		//u是未匹配的,找到增广路
+          a=ar[x];
+          a.push_back(u);
+          return 1;
+        } else {					//u是已匹配的点
+          int v=match[u];
+          if (level[v]!=-1) continue;
+          ar[v]=ar[x];
+          ar[v].push_back(u);
+          ar[v].push_back(v);
+          level[u]=0;
+          level[v]=1;
+          q[qn++]=v;
+        }
+      } else if (level[u]==1) {			//u和x同为偶点.形成花
+        int root=lca(u,x);
+        vector<int> tmp=ar[x];
+        for (int i=ar[u].size()-1; i>root; i--) {
+          int y=ar[u][i];
+          tmp.push_back(y);
+          if (level[y]==0) {
+            level[y]=1;
+            ar[y]=tmp;
+            level[y]=1;
+            q[qn++]=y;
+          }
+        }
+        tmp=ar[u];
+        for (int i=ar[x].size()-1; i>root; i--) {
+          int y=ar[x][i];
+          tmp.push_back(y);
+          if (level[y]==0) {
+            level[y]=1;
+            ar[y]=tmp;
+            level[y]=1;
+            q[qn++]=y;
           }
         }
       }
-  }
-}
-void AugmentPath() {
-  int u,v,w;
-  u = Finish;
-  while (u > 0) {
-    v = Father[u];
-    w = Match[v];
-    Match[v] = u;
-    Match[u] = v;
-    u = w;
-  }
-}
-void Edmonds() {
-  memset(Match,0,sizeof(Match));
-  for (int u = 1; u <= N; u++)
-    if (Match[u] == 0) {
-      Start = u;
-      FindAugmentingPath();
-      if (Finish > 0) AugmentPath();
     }
+  }
+  return 0;
 }
-void PrintMatch() {}
-int main() {
-  CreateGraph();
-  Edmonds();
-  PrintMatch();
+int MaximumMatch() {
+  int ret=0;							//最大匹配数
+  memset(match,-1,sizeof(match));
+  for (int i=0; i<n; i++)
+    if (match[i]==-1)
+      if (FindAlterRoad(i)) {
+        for (int i=0; i<a.size(); i+=2) {
+          int u=a[i],v=a[i+1];
+          match[u]=v;
+          match[v]=u;
+        }
+        ret++;
+      } else match[i]=i;
+  return ret;
 }
 
