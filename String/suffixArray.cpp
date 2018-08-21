@@ -1,18 +1,7 @@
-#include <assert.h>
-#include <algorithm>
-#include <cstdio>
-#include <cstring>
-#include <iomanip>
-#include <iostream>
-#include <map>
-#include <vector>
+
 
 #define F(x) ((x) / 3 + ((x) % 3 == 1 ? 0 : tb))
 #define G(x) ((x) < tb ? (x)*3 + 1 : ((x)-tb) * 3 + 2)
-using namespace std;
-typedef pair<int, int> pii;
-const int N = 888888;
-const int inf = 0x3f3f3f3f;
 int t1[N], t2[N], c[N], sa[N], ra[N], height[N];
 
 bool cmp(int *r, int a, int b, int l)

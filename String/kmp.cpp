@@ -1,14 +1,11 @@
-#include <bits/stdc++.h>
-using namespace std;
-const int N = 1e5 + 10;
 int nextt[N];
-void getNext(string &str)
+void getNext(char *s)
 {
-    int len = str.size(), k = -1, j = 0;
+    int len = strlen(s), k = -1, j = 0;
     nextt[0] = -1;
     while (j < len)
     {
-        if (k == -1 || str[j] == str[k])
+        if (k == -1 || s[j] == s[k])
         {
             j++, k++;
             nextt[j] = k;
@@ -21,15 +18,15 @@ void getNext(string &str)
 
 //返回第一次匹配位置，失配为-1
 //选择返回cnt时 为匹配次数
-int match(string &S, string &P)
+int match(char *s, char *p)
 {
     int cnt = 0;
-    int lenS = S.size();
-    int lenP = P.size();
+    int lenS = strlen(s);
+    int lenP = strlen(p);
     int j = 0, k = 0;
     while (k < lenP && j < lenS)
     {
-        if (k == -1 || S[j] == P[k])
+        if (k == -1 || s[j] == p[k])
         {
             j++, k++;
         }
@@ -37,8 +34,7 @@ int match(string &S, string &P)
             k = nextt[k];
         // if (k == lenP) {
         //     cnt++;
-        //     k = nextt[k]; //重叠
-        ////k=0; //不重叠
+        //     k = nextt[k]; //k=0 不重叠
         // }
     }
     if (k < lenP)
