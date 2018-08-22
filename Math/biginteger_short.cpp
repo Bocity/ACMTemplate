@@ -20,8 +20,9 @@ class BigInteger {
     }
 
   public:
+    // --------------------构造函数----------------------
     BigInteger() {}
-    // 使用string初始化BigInteger，不支持负数
+    // 使用string初始化BigInteger，不支持负数: 基本，必需
     BigInteger(string s) {
         if (s.size() == 0) {
             Integer.push_back(0);
@@ -51,29 +52,16 @@ class BigInteger {
         }
         new (this) BigInteger(s);
     }
-    // 使用int类型初始化 BigInteger
-    BigInteger(int x) {
-        new (this) BigInteger((long long) x);
-    }
-    //重载输入运算符
-    friend istream &operator>>(istream &in, BigInteger &a) {
-        string s;
-        cin >> s;
-        BigInteger temp(s);
-        a = temp;
-        return in;
-    }
-    //重载输出运算符
-    friend ostream &operator<<(ostream &out, BigInteger a) {
-        a.print();
-        return out;
-    }
-    // 重载=运算符
+
+    // 重载=运算符: 基本,必需
     BigInteger &operator=(const BigInteger &a) {
         this->Integer = a.Integer;
         return *this;
     }
-    //重载<运算符，用于两个大数之间的比较
+
+    // --------------------比较运算符----------------------
+
+    //重载<运算符，用于两个大数之间的比较: 基本
     friend bool operator<(BigInteger a, BigInteger b) {
         a.SetInteger();
         b.SetInteger();
@@ -84,43 +72,46 @@ class BigInteger {
         }
         return false;
     }
-    //重载<运算符，可以用于任意类型的比较
+    //重载<运算符，可以用于任意类型的比较: <
     template <typename T> friend bool operator<(BigInteger a, T b) {
         BigInteger t((long long) b);
         return a < t;
     }
 
-    //重载>运算符，用于两个大数之间的比较
+    //重载>运算符，用于两个大数之间的比较: <
     friend bool operator>(BigInteger a, BigInteger b) {
         return b < a;
     }
-    // 重载>运算符，可以用于任意类型的比较
+    // 重载>运算符，可以用于任意类型的比较: <
     template <typename T> friend bool operator>(BigInteger a, T b) {
         BigInteger t((long long) b);
         return t < a;
     }
-    //重载==运算符
+    //重载==运算符: <
     friend bool operator==(BigInteger a, BigInteger b) {
         return !(a < b) && !(b < a);
     }
-    // 重载！=运算符
+    // 重载!=运算符: <
     friend bool operator!=(BigInteger a, BigInteger b) {
-        return !(a == b);
+        return (a < b) || (b < a);
     }
-    //重载==运算符，可以用于任意类型的比较
+    //重载==运算符，可以用于任意类型的比较: <
     template <typename T> friend bool operator==(BigInteger a, T b) {
         BigInteger t((long long) b);
         return !(a < t) && !(t < a);
     }
-    // 重载<=运算符，可以用于任意类型的比较
+    // 重载<=运算符，可以用于任意类型的比较: </==
     template <typename T> friend bool operator<=(BigInteger a, T b) {
         return a < b || a == b;
     }
-    // 重载>=运算符，可以用于任意类型的比较
+    // 重载>=运算符，可以用于任意类型的比较: </==
     template <typename T> friend bool operator>=(BigInteger a, T b) {
         return b < a || b == a;
     }
-    //重载+运算符，用于两个大数相加
+
+    // --------------------计算运算符----------------------
+
+    //重载+运算符，用于两个大数相加: 基本
     BigInteger operator+(BigInteger x) {
         BigInteger y = *this, ans;
         x.SetInteger();
@@ -137,34 +128,12 @@ class BigInteger {
         ans.SetInteger();
         return ans;
     }
-    //重载+运算符，用于大数和任意类型相加
+    //重载+运算符，用于大数和任意类型相加: +
     template <typename T> BigInteger operator+(T x) {
         BigInteger t((long long) x);
         return *this + t;
     }
-    //重载后置++运算符
-    const BigInteger operator++(int) {
-        BigInteger t = *this;
-        *this = *this + 1;
-        return t;
-    }
-    //重载前置++运算符
-    BigInteger &operator++() {
-        *this = *this + 1;
-        return *this;
-    }
-    //重载+=运算符，用于两个大数相加
-    BigInteger &operator+=(BigInteger x) {
-        *this = *this + x;
-        return *this;
-    }
-    //重载+=运算符，用于任意类型相加
-    template <typename T> BigInteger &operator+=(T x) {
-        BigInteger t((long long) x);
-        *this = *this + t;
-        return *this;
-    }
-    //重载-运算符，用于两个大数相减
+    //重载-运算符，用于两个大数相减: 基本
     BigInteger operator-(BigInteger x) {
         BigInteger y = *this, ans;
         x.SetInteger();
@@ -183,34 +152,13 @@ class BigInteger {
         ans.SetInteger();
         return ans;
     }
-    //重载-运算符，用于大数与任意类型相减
+    //重载-运算符，用于大数与任意类型相减: -
     template <typename T> BigInteger operator-(T x) {
         BigInteger t((long long) x);
         return *this - t;
     }
-    //重载后置--运算符
-    const BigInteger operator--(int) {
-        BigInteger t = *this;
-        *this = *this - 1;
-        return t;
-    }
-    //重载前置--运算符
-    BigInteger &operator--() {
-        *this = *this - 1;
-        return *this;
-    }
-    //重载-=运算符，用于两个大数相减
-    BigInteger &operator-=(BigInteger x) {
-        *this = *this - x;
-        return *this;
-    }
-    //重载-=运算符，用于大数和任意类型相减
-    template <typename T> BigInteger &operator-=(T x) {
-        BigInteger t((long long) x);
-        *this = *this - t;
-        return *this;
-    }
-    //重载*运算符，用于两个两个大数相乘
+
+    //重载*运算符，用于两个两个大数相乘: 基本
     BigInteger operator*(BigInteger x) {
         BigInteger y = *this, ans;
         x.SetInteger();
@@ -229,23 +177,12 @@ class BigInteger {
         ans.SetInteger();
         return ans;
     }
-    //  重载 *运算符, 用于大数和任意两个数相乘
+    //  重载 *运算符, 用于大数和任意两个数相乘: *
     template <typename T> BigInteger operator*(T x) {
         BigInteger t((long long) x);
         return *this * t;
     }
-    // 重载*= 算符,      用于两个大数相乘
-    BigInteger &operator*=(BigInteger x) {
-        *this = *this * x;
-        return *this;
-    }
-    // 重载*=运算符, 用于大数与任意类型的数相乘
-    template <typename T> BigInteger &operator*=(T x) {
-        BigInteger t((long long) x);
-        *this = *this * t;
-        return *this;
-    }
-    // 重载 / 运算符, 用于两个大数相除
+    // 重载 / 运算符, 用于两个大数相除: Con(int)/-/*
     BigInteger operator/(BigInteger x) {
         BigInteger y = *this, ans, cur;
         x.SetInteger();
@@ -268,7 +205,7 @@ class BigInteger {
         ans.SetInteger();
         return ans;
     }
-    // 重载/运算符, 用于大数和任意类型相除
+    // 重载/运算符, 用于大数和任意类型相除: 基本
     template <typename T> BigInteger operator/(T x) {
         BigInteger y = *this, ans, t((long long) x);
         y.SetInteger();
@@ -282,25 +219,15 @@ class BigInteger {
         ans.SetInteger();
         return ans;
     }
-    //  重载 /=运算符,  用于大数和大数相除
-    BigInteger &operator/=(BigInteger x) {
-        *this = *this / x;
-        return *this;
-    }
-    //重载 /=运算符,  用于大数和任意类型相除
-    template <typename T> BigInteger &operator/=(T x) {
-        BigInteger t((long long) x);
-        *this = *this / t;
-        return *this;
-    }
-    //重载%运算符，用于两个大数之间的取余数操作
+
+    //重载%运算符，用于两个大数之间的取余数操作: */Con(int)/-
     BigInteger operator%(BigInteger x) {
         BigInteger y = *this, ans;
         x.SetInteger();
         y.SetInteger();
         int len = y.Integer.size() - 1;
         for (int i = len; i >= 0; i--) {
-            ans.Integer.insert(ans.Integer.begin(), y.Integer[i]);
+            ans.Integer.insert(ans.Integer.begin(), y.Integer[i]);//和/只有这2句不同
             int t = 0, l = 0, r = base;
             while (l <= r) {
                 int mid = (l + r) >> 1;
@@ -310,12 +237,12 @@ class BigInteger {
                 } else
                     l = mid + 1;
             }
-            ans = ans - BigInteger(t - 1) * x;
+            ans = ans - BigInteger(t - 1) * x;//和/只有这2句不同
         }
         ans.SetInteger();
         return ans;
     }
-    //  重载 % 算符, 用于大数和任意类型的数
+    //  重载 % 算符, 用于大数和任意类型的数: 基本
     template <typename T> T operator%(T x) {
         BigInteger y = *this;
         y.SetInteger();
@@ -326,28 +253,21 @@ class BigInteger {
         }
         return ans;
     }
-    //  重载%= 算符, 大数之间
-    BigInteger &operator%=(BigInteger x) {
-        *this = *this % x;
-        return *this;
-    }
-    // 重载%=运算符     大数和任意类型
-    template <typename T> BigInteger &operator%=(T x) {
-        BigInteger t((long long) x);
-        *this = *this % t;
-        return *this;
-    }
+
+    // --------------------计算函数----------------------
+
+    // 快速幂：=, /, %, *, ==
     friend BigInteger power(BigInteger a, BigInteger x) {
         if (x == BigInteger(0) || a == BigInteger(1)) return BigInteger(1);
-        BigInteger tmp = power(a, x / 2);
-        if (x % 2 == 0) return tmp * tmp;
+        BigInteger tmp = power(a, x / BigInteger(2));
+        if (x % BigInteger(2) == BigInterger(0) ) return tmp * tmp;
         return tmp * tmp * a;
     }
-    // 大数和较小数
+    // 大数和较小数: power
     template <typename T> friend BigInteger power(BigInteger a, T x) {
         return power(a, BigInteger((long long) x));
     }
-    // 大数和大数
+    // 大数和大数gcd: %
     friend BigInteger gcd(BigInteger a, BigInteger b) {
         a.SetInteger();
         b.SetInteger();
@@ -359,11 +279,11 @@ class BigInteger {
         a.SetInteger();
         return a;
     }
-    //  最小公倍数
+    //  lcm: *, gcd
     friend BigInteger lcm(BigInteger a, BigInteger b) {
         return a * b / gcd(a, b);
     }
-    // 大数开方
+    // 大数开方: 基本
     friend BigInteger sqrt(BigInteger a) {
         BigInteger x0 = a, x1 = (a + 1) / 2;
         while (x1 < x0) {
@@ -372,7 +292,7 @@ class BigInteger {
         }
         return x0;
     }
-    //  大数 log
+    //  大数 log: 基本
     friend int log(BigInteger a, int n) { // log_n(a)
         int ans = 0;
         a.SetInteger();
@@ -383,6 +303,7 @@ class BigInteger {
         return ans;
     }
 };
+
 bitset<5005> q,p;
 BigInteger a,b,c,d=0;
 int t;

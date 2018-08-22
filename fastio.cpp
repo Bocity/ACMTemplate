@@ -1,3 +1,9 @@
+// maxlen 输出单位长度（只影响速度，不用改）
+// xchar/wchar 读入/输出字符，基本函数
+// xuint/wuint，读入/输出无符号整数(ull)
+// xint/wint，读入/输出符号整数(ll)
+// xstring/wstring，读入/输出char字符串
+
 typedef long long ll;
 typedef long long ull;
 const int maxlen = 100000;
@@ -57,8 +63,4 @@ struct FastIO {
     }
 } io;
 
-// maxlen 输出单位长度（只影响速度，不用改）
-// xchar/wchar 读入/输出字符，基本函数
-// xuint/wuint，读入/输出无符号整数(ull)
-// xint/wint，读入/输出符号整数(ll)
-// xstring/wstring，读入/输出char字符串
+
