@@ -22,11 +22,14 @@ ll query(int i){
 
 //树状数组维护区间最值，A[i]必须已经更新
 //但凡具有区间并性质的函数都可以用此方式维护，比如gcd
+int lowbit(int x){ 
+  return -x&x; 
+}
 ll C[N];
 void update(int i,int n){
   for(;i<=n;i+=i&(-i)){
-    C[i] = A[i];
-    for(int j=i&(-i>)>1;j;j>>1) //枚举被管辖的数
+    C[i] = A[i];//修改
+    for(int j=i&(-i);j;j>>1) //枚举被管辖的数
       C[i] = max(C[i],C[i-j]);
   }
 }
@@ -38,7 +41,7 @@ ll query(int l,int r){
       r-=lowbit(r);
     }
     else{ // 否则只走一步
-      ans = max(ans,A[r]);
+      ans = max(ans,A[r]);//修改
       r--;
     }
   return ans;
