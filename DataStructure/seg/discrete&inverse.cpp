@@ -16,13 +16,19 @@ ll query(int i){
   return ans;
 }
 
+// tmp为原数组的拷贝，d为原数组
+// n为数组长度，下标从1开始。如果从0开始，把所有的tmp+1改成tmp。值不变，依然是1..m。
+// 排序之后去重，然后每个元素的值为在排序后的数组中到起始的距离+1
+// 离散化之后值为1..m（去重后的个数）
 int tmp[N];
 int d[N];
-void discrete(){
+void discrete(int d[],int n){
+  llp(i,1,n+1) tmp[i] = d[i];
   sort(tmp+1,tmp+1+n);
   int m=unique(tmp+1,tmp+1+n)- (tmp+1);
   for (int i=1;i<=n;++i) d[i]=lower_bound(tmp+1,tmp+1+m,d[i])-(tmp+1) + 1;
 }
+
 
 int main(){
   int n;

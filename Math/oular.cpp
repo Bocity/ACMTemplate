@@ -15,21 +15,22 @@ int oula(int n)
     return rea;
 }
 
-int phi[N];
-bool check[N]; // 访问标记
-int prime[N];
-int tot = 0;
+// [1,maxn)
+const int maxn = 10001;
+int phi[maxn];
+bool vis[maxn] = {true, true};
+int prime[maxn];
+int tot=0;
 void phi_table(int n) {
     tot = 0;
     phi[1] = 1;
-    for (int i = 2; i <= n; i++) {
-        if (!check[i]) {
+    for (int i = 2; i < maxn; i++) {
+        if (!vis[i]) {
             prime[tot++] = i;
             phi[i] = i - 1;
         }
-        for (int j = 0; j < tot; j++) {
-            if (i * prime[j] > n) break;
-            check[i * prime[j]] = true;
+        for (int j = 0; j < tot && (ll) i * prime[j] < maxn; j++) {
+            vis[i * prime[j]] = true;
             if (i % prime[j] == 0) {
                 phi[i * prime[j]] = phi[i] * prime[j];
                 break;

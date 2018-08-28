@@ -18,7 +18,12 @@ int mobi(int n) {
     if (n > 1) m *= -1;
     return m;
 }
-//线性筛求mu
+//线性筛求mu, [1,maxn)
+const int maxn = 10000+1;
+int mu[maxn];
+bool vis[maxn] = {true, true};
+int prime[maxn];
+int tot=0;
 void init() {
     memset(vis, 0, sizeof(vis));
     mu[1] = 1;
@@ -28,8 +33,7 @@ void init() {
             prime[tot++] = i;
             mu[i] = -1;
         }
-        for (int j = 0; j < tot; j++) {
-            if (i * prime[j] >= maxn) break;
+        for (int j = 0; j < tot && (ll) i * prime[j] < maxn; j++) {
             vis[i * prime[j]] = true;
             if (i % prime[j] == 0) {
                 mu[i * prime[j]] = 0;

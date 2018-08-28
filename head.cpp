@@ -1,3 +1,4 @@
+// #pragma GCC optimize(3)
 #include<bits/stdc++.h>
 using namespace std;
 
@@ -11,7 +12,6 @@ const ll MOD=1e9+7;
 const ll N=1e6+50;
 const ll INF=2e18;
 
-
 ll qpower(ll x,ll p,ll M=MOD){ll ans=1;while(p){if (p&1) ans=ans*x%M;p>>=1;x=x*x%M;}return ans;}
 ll gcd(ll a,ll b){ll x;while(b){x = a%b;a = b;b = x;}return a;}
 
@@ -19,38 +19,35 @@ ll modp(ll x,ll p = MOD){return (x%p+p)%p;} //常数较大
 ll addp(ll x,ll y,ll p = MOD){return x+y>=p?x+y-p:x+y;}
 ll subp(ll x,ll y,ll p = MOD){return x-y<0?x-y+p:x-y;}
 
-
-
-
 const double eps=1e-9;
-int ifloor(db x){return x>0?int(x+eps):int(x-eps);}//浮点数注意精度误差
-bool fequal(db x,db y){return fabs(x-y) <= eps; }
-
+int ifloor(double x){return x>0?int(x+eps):int(x-eps);}//浮点数注意精度误差
+bool fequal(double x,db y){return fabs(x-y) <= eps; }
 
 typedef unsigned long long ull;
 // typedef __int128 ull;
 typedef pair<int,int> pii;
 #define fi first
 #define se second
-#define pb push_back
 #define mp make_pair
+#define pb push_back
 
 int main(){
   std::ios::sync_with_stdio(false);
   srand((unsigned)time(NULL));
 }
 
+/* 提交之前注意：
+- 输入>1e6?上挂
+- 溢出：会炸int的地方开了int，>1e9的数没取模?
+- 多组输入输出？初始化了吗？
+*/
 
-
-/* lookat
-- boundary
+/* 常见bug
+- 边界/初值
 - ll%MOD*ll%MOD
-- memset 
-- initial value f(0)
+- 初始化
 - int*int? u*u = ull 
 - int(double+eps)
-- llp(i,l,r+1)
-- special case, n=0
-- outrange, N = ?
+- 特例, n=0
 - getchar()
 */

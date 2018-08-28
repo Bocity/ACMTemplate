@@ -118,6 +118,7 @@ il void delete_val(int tar) {    //删除值为tar的数
     delete_pos(root, find_rank(tar));
     if ((double) e[root].total * alpha > e[root].valid) rebuild(root);
 }
+
 int main() {
     int opt, x, m;
     for (int i = 2000000; i >= 1; i--) memory[++pool] = i;
