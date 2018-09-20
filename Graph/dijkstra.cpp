@@ -10,7 +10,7 @@ struct Dijkstra {
     int pre[N], mcnt, s, dis[N];
     arc e[2 * M];
     void init(int i) { 
-        mems(pre, -1);
+        mem(pre, -1);
         mcnt = 0;
         s = i;
     }
@@ -19,7 +19,7 @@ struct Dijkstra {
         e[mcnt] = (arc){x, z, pre[y]}, pre[y] = mcnt++;
     }
     void go() {
-        mems(dis, 0x3f);
+        mem(dis, 0x3f);
         dis[s] = 0;
         st.insert(pii(0, s));
         while (!st.empty()) {
@@ -44,7 +44,7 @@ struct Dijkstra {
     int pre[N], mcnt, s, dis[N];
     arc e[2 * M];
     void init(int i) {
-        mems(pre, -1);
+        mem(pre, -1);
         mcnt = 0;
         s = i;
     }
@@ -53,7 +53,7 @@ struct Dijkstra {
         e[mcnt] = (arc){x, z, pre[y]}, pre[y] = mcnt++;
     }
     void go() {
-        mems(dis, 0x3f);
+        mem(dis, 0x3f);
         dis[s] = 0;
         pq.push(pii(0, s));
         while (!pq.empty()) {
