@@ -1,74 +1,79 @@
-#include <bits/stdc++.h>
-#define REP(i, x, n) for (int i = (x); i < (n); ++i)
-#define PER(i, x, n) for (int i = (n) -1; i >= x; --i)
-#define endl "\n"
-#define DE puts("----------")
-#define CASE(i, ans) cout << "Case #" << (i) << ": " << (ans) << "\n"
-#define lowbit(x) ((x) & (-(x)))
-#define sqr(x) ((x) * (x))
-#define eps 1e-9
-#define PI acos(-1.0)
-#define MOD 1000000007
-using namespace std;
-typedef long long ll;
-const int inf = 1 << 29, N = 1000, M = 100010;
-int head[N], ver[N], edge[M], Next[M], d[N];
-int n, m, s, t, tot, maxflow;
-queue<int> q;
-void add(int x, int y, int z) {
-    ver[++tot] = y, edge[tot] = z, Next[tot] = head[x], head[x] = tot;
-    ver[++tot] = x, edge[tot] = 0, Next[tot] = head[y], head[y] = tot;
-}
-bool bfs() {
-    memset(d, 0, sizeof d);
-    while (q.size()) q.pop();
-    q.push(s);
-    d[s] = 1;
-    while (q.size()) {
-        int x = q.front();
-        q.pop();
-        for (int i = head[x]; i; i = Next[i]) {
-            if (edge[i] && !d[ver[i]]) {
-                q.push(ver[i]);
-                d[ver[i]] = d[x] + 1;
-                if (ver[i] == t) return 1;
+
+struct E {
+    int from, to, cap, flow;
+    E() {}
+    E(int f, int t, int c, int fl)
+        : from(f)
+        , to(t)
+        , cap(c)
+        , flow(fl) {}
+};
+
+struct Dinic {
+    int n, m, s, t;
+    vector<E> e;
+    vector<int> G[maxn];
+    bool vis[maxn];
+    int cur[maxn];
+    int d[maxn];
+    const int INF = 1 << 29;
+    void init(int n, int s, int t) {
+        this->n = n, this->s = s, this->t = t;
+        e.clear();
+        for (int i = 0; i < n; ++i) G[i].clear();
+    }
+
+    void add(int from, int to, int cap) {
+        e.push_back(E(from, to, cap, 0));
+        e.push_back(E(to, from, 0, 0));
+        m = e.size();
+        G[from].push_back(m - 2);
+        G[to].push_back(m - 1);
+    }
+
+    bool bfs() {
+        queue<int> Q;
+        memset(vis, 0, sizeof(vis));
+        vis[s] = true;
+        d[s] = 0;
+        Q.push(s);
+        while (!Q.empty()) {
+            int x = Q.front();
+            Q.pop();
+            for (int i = 0; i < G[x].size(); ++i) {
+                E &ed = e[G[x][i]];
+                if (!vis[ed.to] && ed.cap > ed.flow) {
+                    vis[ed.to] = true;
+                    d[ed.to] = d[x] + 1;
+                    Q.push(ed.to);
+                }
             }
         }
+        return vis[t];
     }
-    return 0;
-}
-int dinic(int x, int flow) {
-    if (x == t) return flow;
-    int rest = flow, k;
-    for (int i = head[x]; i && rest; i = Next[i]) {
-        if (edge[i] && d[ver[i]] == d[x] + 1) {
-            k = dinic(ver[i], min(rest, edge[i]));
-            if (!k) d[ver[i]] = 0;
-            edge[i] -= k;
-            edge[i ^ 1] += k;
-            rest -= k;
+
+    int dfs(int x, int a) {
+        if (x == t || a == 0) return a;
+        int flow = 0, f;
+        for (int &i = cur[x]; i < G[x].size(); ++i) {
+            E &ed = e[G[x][i]];
+            if (d[ed.to] == d[x] + 1 && (f = dfs(ed.to, min(a, ed.cap - ed.flow))) > 0) {
+                ed.flow += f;
+                e[G[x][i] ^ 1].flow -= f;
+                flow += f;
+                a -= f;
+                if (a == 0) break;
+            }
         }
+        return flow;
     }
-    return flow - rest;
-}
-int a, b;
-int main() {
-    scanf("%d%d", &n, &m);
-    REP(i, 1, m + 1) {
-        add(n + 1, i, 1);
+
+    int max_flow() {
+        int ans = 0;
+        while (bfs()) {
+            memset(cur, 0, sizeof(cur));
+            ans += dfs(s, INF);
+        }
+        return ans;
     }
-    REP(i, m + 1, n + 1) {
-        add(i, n + 2, 1);
-    }
-    while (~scanf("%d%d", &a, &b)) {
-        add(a, b, inf);
-    }
-    s = n + 1;
-    t = n + 2;
-    int flow;
-    while (bfs()) {
-        while (flow = dinic(s, inf)) maxflow += flow;
-    }
-    printf("%d\n", maxflow);
-    return 0;
-}
+} DC;
