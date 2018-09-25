@@ -8,7 +8,7 @@ public class Main {
     
     //输入输出挂，只能一整行地读
     static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-    static BufferedWriter out = new BufferedWriter(new OutputStreamWriter(System.out));
+    // static BufferedWriter out = new BufferedWriter(new OutputStreamWriter(System.out));
 
     public static void main(String []args) throws Exception{
         String temp;
@@ -23,7 +23,7 @@ public class Main {
 }
 
 public class Main {
-    Scanner cin=new Scanner (System.in);
+    static Scanner cin=new Scanner (System.in);
 
     public static void main(String []args) throws Exception{
         String temp;
@@ -32,6 +32,76 @@ public class Main {
             BigInteger b = cin.nextBigInteger(); 
             System.out.println(a.multiply(b));
         }
+    }
+}
+
+// 大数开方二分
+public static BigInteger cal(BigInteger x){
+    BigInteger l = BigInteger.ONE ;
+    BigInteger r = maxn;
+    BigInteger mid;
+    while(l.compareTo(r)<=0){
+        mid = l.add(r).divide(BigInteger.valueOf(2)) ;
+        if (mid.multiply(mid).compareTo(x) <= 0)
+          l = mid.add(BigInteger.ONE);
+        else r =  mid.subtract(BigInteger.ONE);
+    }
+    return r;
+}   
+
+
+// 更强的挂（快100ms）
+class InputReader{
+    BufferedReader buf;
+    StringTokenizer tok;
+    InputReader(){
+        buf = new BufferedReader(new InputStreamReader(System.in));
+    }
+    boolean hasNext(){
+        while(tok == null || !tok.hasMoreElements()){
+            try{
+                tok = new StringTokenizer(buf.readLine());
+            } 
+            catch(Exception e){
+                return false;
+            }
+        }
+        return true;
+    }
+    String next()
+    {
+        if(hasNext()) return tok.nextToken();
+        return null;
+    }
+    int nextInt()
+    {
+        return Integer.parseInt(next());
+    }
+    long nextLong()
+    {
+        return Long.parseLong(next());
+    }
+    double nextDouble()
+    {
+        return Double.parseDouble(next());
+    }
+    BigInteger nextBigInteger()
+    {
+        return new BigInteger(next());
+    }
+    BigDecimal nextBigDecimal()
+    {
+        return new BigDecimal(next());
+    }
+}
+public class Main{
+    static InputReader in = new InputReader();
+    static PrintWriter out = new PrintWriter(System.out);
+    public static void main(String[] args) throws Exception{
+        int t = in.nextInt();
+        BigInteger N = in.nextBigInteger();
+        out.println("League of Legends");
+        out.close();
     }
 }
 

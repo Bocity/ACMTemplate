@@ -4,11 +4,11 @@ int lowbit(int x){ // 返回最低位的1
   return -x&x; // 原理：-x是取x的补码，即反码+1。二进制数加一时最低位的0成为1，更低的1都成为0。因此-x&x，最低位的1（反码中最低位的0）会保留下来，其他都会变成0，这样就得到了x的最低位的1
 }
 
-ll A[N];
 //树状数组维护前缀和。只维护C,不会使用A。
 //但凡具有区间和性质的函数都可以用树状数组维护前缀和
 //但凡有区间差性质的函数都可以用前缀和维护区间和，比如乘，加，注意初始值不同
 //如果按值插入则可以做到维护在当前元素左边/右边的比它大/小的数的函数和
+ll A[N];
 ll C[N];
 void update(int i,ll x,int n){ //需要手动初始化
   for(;i<=n;i+=i&(-i)) C[i]+=x;
@@ -22,29 +22,25 @@ ll query(int i){
 
 //树状数组维护区间最值，A[i]必须已经更新
 //但凡具有区间并性质的函数都可以用此方式维护，比如gcd
-int lowbit(int x){ 
-  return -x&x; 
+int lowbit(int x){
+	return x & (-x);
 }
-ll C[N];
-void update(int i,int n){
-  for(;i<=n;i+=i&(-i)){
-    C[i] = A[i];//修改
-    for(int j=i&(-i);j;j>>1) //枚举被管辖的数
-      C[i] = max(C[i],C[i-j]);
-  }
+void updata(int i,int n){
+	for(;i<=n;i+=i&(-i)){
+		h[i] = a[i];
+		for(int j = lowbit(i)-1;j;j-=j&(-j));
+			h[i] = max(h[i], h[j]);
+	}
 }
-ll query(int l,int r){
-  ll ans = 0;
-  while(l<=r)
-    if (r-lowbit(r)+1 >= l){ //保证C[r]代表的区间没有越界
-      ans = max(ans,C[r]);
-      r-=lowbit(r);
-    }
-    else{ // 否则只走一步
-      ans = max(ans,A[r]);//修改
-      r--;
-    }
-  return ans;
+ll query(int l, int r){
+	ll ans = 0;
+	while (r >= l){
+		ans = max(a[r], ans);
+		r --;
+		for (; r-lowbit(r) >= l; r -= lowbit(r))
+			ans = max(h[r], ans);
+	}
+	return ans;
 }
 
 

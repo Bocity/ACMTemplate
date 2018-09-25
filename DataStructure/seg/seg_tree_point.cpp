@@ -3,15 +3,15 @@
 #define RSON m + 1, r, rt << 1 | 1
 #define lson rt << 1
 #define rson rt << 1 | 1
-ll sum[N << 2];
+ll anstr[N << 2];
 
 inline void Maintain(const ll &rt) { //更新答案
-    sum[rt] = sum[lson] + sum[rson];
+    anstr[rt] = anstr[lson] + anstr[rson];
     return;
 }
 void build(int l, int r, const int &rt = 1) {
     if (l == r) {
-        sum[rt] = 0;
+        anstr[rt] = 0;
         return;
     }
     int m = (l + r) >> 1;
@@ -23,7 +23,7 @@ void build(int l, int r, const int &rt = 1) {
 
 inline void update(const int &L, const ll &c, int l, int r, const int &rt = 1) {
     if (l == r) {
-        sum[rt] = c;
+        anstr[rt] = c;
         return;
     }
     int m = (l + r) >> 1;
@@ -37,7 +37,7 @@ inline void update(const int &L, const ll &c, int l, int r, const int &rt = 1) {
 
 inline ll query(const int &L, const int &R, int l, int r, const int &rt = 1) {
     if (L <= l && r <= R) {
-        return sum[rt];
+        return anstr[rt];
     }
     ll ret = 0;
     int m = (l + r) >> 1;

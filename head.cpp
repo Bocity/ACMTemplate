@@ -7,6 +7,7 @@ using namespace std;
 #define mem(a,x) memset(a,x,sizeof a)
 
 typedef long long ll;
+typedef unsigned long long ull;
 
 const ll MOD=1e9+7;
 const ll N=1e6+50;
@@ -21,7 +22,7 @@ ll subp(ll x,ll y,ll p = MOD){return x-y<0?x-y+p:x-y;}
 
 const double eps=1e-9;
 int ifloor(double x){return x>0?int(x+eps):int(x-eps);}//浮点数注意精度误差
-bool fequal(double x,db y){return fabs(x-y) <= eps; }
+bool fequal(double x,double y){return fabs(x-y) <= eps; }
 
 typedef unsigned long long ull;
 // typedef __int128 ull;
@@ -31,9 +32,16 @@ typedef pair<int,int> pii;
 #define mp make_pair
 #define pb push_back
 
+// std::ios::sync_with_stdio(false);
+// srand((unsigned)time(NULL));
+
 int main(){
-  std::ios::sync_with_stdio(false);
-  srand((unsigned)time(NULL));
+  ull x,y,z;
+  x = 1231241241;
+  z = 0;
+  cout<<~x<<endl;
+  cout<<z-1-x<<endl;
+  cout<<z-1-x<<endl; 
 }
 
 /* 提交之前注意：
