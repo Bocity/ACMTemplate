@@ -16,9 +16,9 @@ const ll INF=2e18;
 ll qpower(ll x,ll p,ll M=MOD){ll ans=1;while(p){if (p&1) ans=ans*x%M;p>>=1;x=x*x%M;}return ans;}
 ll gcd(ll a,ll b){ll x;while(b){x = a%b;a = b;b = x;}return a;}
 
-ll modp(ll x,ll p = MOD){return (x%p+p)%p;} //常数较大
 ll addp(ll x,ll y,ll p = MOD){return x+y>=p?x+y-p:x+y;}
 ll subp(ll x,ll y,ll p = MOD){return x-y<0?x-y+p:x-y;}
+ll modp(ll x,ll p = MOD){return addp(x%p,p);} //常数较大
 
 const double eps=1e-9;
 int ifloor(double x){return x>0?int(x+eps):int(x-eps);}//浮点数注意精度误差

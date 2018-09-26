@@ -56,7 +56,6 @@ void deal(){
   int len = str.length();
   string tmp="";
   llp(i,0,len){
-    // cout<<tmp<<endl;//debug
     if (str[i]=='-' && (i==0 || str[i-1]=='(' || str[i-1]=='*' ||str[i-1]=='+'||str[i-1]=='-' ) ) tmp += str[i];
     else if (str[i]>='0' && str[i]<='9') tmp += str[i];
     else {
@@ -67,7 +66,6 @@ void deal(){
   if (tmp!="") elem[tot++] = tmp;
 }
 
-bool debug = 0;
 int main(){
   for (int i=0;i<6;++i) prio[s[i]] = pp[i];
 
@@ -78,7 +76,6 @@ int main(){
     llp(i,0,tot) cout<<elem[i]<<endl;cout<<endl;
     llp(i,0,tot){
       if (eval(elem[i],num)){
-        if(debug) cout<<num<<" ";
         Snum.push(num);
       }
       else{
@@ -89,7 +86,6 @@ int main(){
             break;
           case ')':
             while(!S.empty() && S.top()!='('){
-              if(debug) cout<<S.top()<<" ";//debug
               calcu(S.top());
               S.pop();
             }
@@ -97,7 +93,6 @@ int main(){
             break;
           default:
             while(!S.empty() && prio[S.top()]>=prio[elemc]){
-              if(debug) cout<<S.top()<<" ";//debug
               calcu(S.top());
               S.pop();
             }
@@ -108,16 +103,11 @@ int main(){
     }
 
     while(!S.empty()){
-      if(debug) cout<<S.top()<<" ";
-
       calcu(S.top());
       S.pop();
     }
 
-    if(debug) cout<<endl;
-
     cout<<Snum.top()<<endl;
     Snum.pop();
   }
-  
 }
